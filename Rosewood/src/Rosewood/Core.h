@@ -10,4 +10,12 @@
 	#error Rosewood only supports windows !
 #endif
 
+#ifdef RW_ENABLE_ASSERTS
+	#define RW_ASSERT(x, ...) { if(!(x)) { HZ_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+	#define RW_CORE_ASSERT(x, ...) { if(!(x)) { HZ_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+#else
+	#define RW_ASSERT(x, ...)
+	#define RW_CORE_ASSERT(x, ...)
+#endif
+
 #define BIT(x) (1 << x)
