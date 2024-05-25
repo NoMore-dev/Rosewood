@@ -1,6 +1,8 @@
 #pragma once
 
+#include "rwpch.h"
 #include "Core.h"
+#include "Events/Event.h"
 
 namespace Rosewood
 {

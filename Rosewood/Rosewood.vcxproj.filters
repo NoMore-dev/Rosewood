@@ -4,6 +4,9 @@
     <Filter Include="Rosewood">
       <UniqueIdentifier>{F7E4F19C-E3B1-4CA8-0CCB-3A50F8F68136}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rosewood\Events">
+      <UniqueIdentifier>{FB7463E4-6700-D1A8-7011-549DDC1B2DA9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Rosewood.h" />
@@ -16,9 +19,22 @@
     <ClInclude Include="src\Rosewood\Entrypoint.h">
       <Filter>Rosewood</Filter>
     </ClInclude>
+    <ClInclude Include="src\Rosewood\Events\ApplicationEvent.h">
+      <Filter>Rosewood\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rosewood\Events\Event.h">
+      <Filter>Rosewood\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rosewood\Events\KeyEvent.h">
+      <Filter>Rosewood\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rosewood\Events\MouseEvent.h">
+      <Filter>Rosewood\Events</Filter>
+    </ClInclude>
     <ClInclude Include="src\Rosewood\Log.h">
       <Filter>Rosewood</Filter>
     </ClInclude>
+    <ClInclude Include="src\rwpch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Rosewood\Application.cpp">
@@ -27,5 +43,6 @@
     <ClCompile Include="src\Rosewood\Log.cpp">
       <Filter>Rosewood</Filter>
     </ClCompile>
+    <ClCompile Include="src\rwpch.cpp" />
   </ItemGroup>
 </Project>
