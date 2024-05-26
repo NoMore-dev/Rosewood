@@ -4,8 +4,11 @@
     <Filter Include="Rosewood">
       <UniqueIdentifier>{F7E4F19C-E3B1-4CA8-0CCB-3A50F8F68136}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Rosewood\Events">
-      <UniqueIdentifier>{FB7463E4-6700-D1A8-7011-549DDC1B2DA9}</UniqueIdentifier>
+    <Filter Include="Rosewood\Event">
+      <UniqueIdentifier>{88030364-74D1-F669-5D65-679049D2D2CE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rosewood\Layer">
+      <UniqueIdentifier>{037F7664-EF4C-6A6A-D8E0-DA90C44D46CF}</UniqueIdentifier>
     </Filter>
     <Filter Include="Rosewood\Log">
       <UniqueIdentifier>{48A0D4DC-3403-6481-DD88-9C37C9CA2F04}</UniqueIdentifier>
@@ -25,17 +28,23 @@
     <ClInclude Include="src\Rosewood\Entrypoint.h">
       <Filter>Rosewood</Filter>
     </ClInclude>
-    <ClInclude Include="src\Rosewood\Events\ApplicationEvent.h">
-      <Filter>Rosewood\Events</Filter>
+    <ClInclude Include="src\Rosewood\Event\ApplicationEvent.h">
+      <Filter>Rosewood\Event</Filter>
     </ClInclude>
-    <ClInclude Include="src\Rosewood\Events\Event.h">
-      <Filter>Rosewood\Events</Filter>
+    <ClInclude Include="src\Rosewood\Event\Event.h">
+      <Filter>Rosewood\Event</Filter>
     </ClInclude>
-    <ClInclude Include="src\Rosewood\Events\KeyEvent.h">
-      <Filter>Rosewood\Events</Filter>
+    <ClInclude Include="src\Rosewood\Event\KeyEvent.h">
+      <Filter>Rosewood\Event</Filter>
     </ClInclude>
-    <ClInclude Include="src\Rosewood\Events\MouseEvent.h">
-      <Filter>Rosewood\Events</Filter>
+    <ClInclude Include="src\Rosewood\Event\MouseEvent.h">
+      <Filter>Rosewood\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rosewood\Layer\Layer.h">
+      <Filter>Rosewood\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rosewood\Layer\LayerStack.h">
+      <Filter>Rosewood\Layer</Filter>
     </ClInclude>
     <ClInclude Include="src\Rosewood\Log\Log.h">
       <Filter>Rosewood\Log</Filter>
@@ -51,6 +60,12 @@
   <ItemGroup>
     <ClCompile Include="src\Rosewood\Application.cpp">
       <Filter>Rosewood</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Rosewood\Layer\Layer.cpp">
+      <Filter>Rosewood\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Rosewood\Layer\LayerStack.cpp">
+      <Filter>Rosewood\Layer</Filter>
     </ClCompile>
     <ClCompile Include="src\Rosewood\Log\Log.cpp">
       <Filter>Rosewood\Log</Filter>

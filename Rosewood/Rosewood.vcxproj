@@ -84,6 +84,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalOptions>/MDd %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -110,6 +111,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MD %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -137,6 +139,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MD %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
@@ -156,10 +159,12 @@
     <ClInclude Include="src\Rosewood\Application.h" />
     <ClInclude Include="src\Rosewood\Core.h" />
     <ClInclude Include="src\Rosewood\Entrypoint.h" />
-    <ClInclude Include="src\Rosewood\Events\ApplicationEvent.h" />
-    <ClInclude Include="src\Rosewood\Events\Event.h" />
-    <ClInclude Include="src\Rosewood\Events\KeyEvent.h" />
-    <ClInclude Include="src\Rosewood\Events\MouseEvent.h" />
+    <ClInclude Include="src\Rosewood\Event\ApplicationEvent.h" />
+    <ClInclude Include="src\Rosewood\Event\Event.h" />
+    <ClInclude Include="src\Rosewood\Event\KeyEvent.h" />
+    <ClInclude Include="src\Rosewood\Event\MouseEvent.h" />
+    <ClInclude Include="src\Rosewood\Layer\Layer.h" />
+    <ClInclude Include="src\Rosewood\Layer\LayerStack.h" />
     <ClInclude Include="src\Rosewood\Log\Log.h" />
     <ClInclude Include="src\Rosewood\Window\Window.h" />
     <ClInclude Include="src\Rosewood\Window\WindowsWindow.h" />
@@ -167,6 +172,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Rosewood\Application.cpp" />
+    <ClCompile Include="src\Rosewood\Layer\Layer.cpp" />
+    <ClCompile Include="src\Rosewood\Layer\LayerStack.cpp" />
     <ClCompile Include="src\Rosewood\Log\Log.cpp" />
     <ClCompile Include="src\Rosewood\Window\WindowsWindow.cpp" />
     <ClCompile Include="src\rwpch.cpp">

@@ -3,7 +3,7 @@
 #include "rwpch.h"
 
 #include "Rosewood/Core.h"
-#include "Rosewood/Events/Event.h"
+#include "Rosewood/Event/Event.h"
 
 namespace Rosewood {
 

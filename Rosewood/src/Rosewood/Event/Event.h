@@ -12,7 +12,7 @@ namespace Rosewood
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
 		AppTick, AppUpdate, AppRender,
 		KeyPressed, KeyReleased,
-		MouseNuttonPressed, MouseButtonRealeased, MouseMoved, MouseScrolled
+		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 	};
 
 	enum EventCategory
@@ -44,6 +44,8 @@ namespace Rosewood
 		{
 			return GetCategoryFlags() & category;
 		}
+		inline bool Handled() const { return m_Handled; }
+
 	protected:
 		bool m_Handled = false;
 	};
@@ -68,13 +70,28 @@ namespace Rosewood
 			}
 			return false;
 		}
+
+		//friend std::ostream& operator<<(std::ostream& os, const Event& e)
+		//{
+		//	return os << e.ToString();
+		//}
+
 	private:
 		Event& m_Event;
 	};
 
-	inline std::ostream& operator<<(std::ostream& os, const Event& e)
-	{
-		return os << e.ToString();
+	template<typename T>
+	struct fmt::formatter<
+		T, std::enable_if_t<std::is_base_of<Event, T>::value, char>>
+		: fmt::formatter<std::string> {
+		auto format(const T& event, fmt::format_context& ctx) {
+			return fmt::format_to(ctx.out(), "{}", event.ToString());
+		}
+	};
+
+	template <typename... T>
+	std::string StringFromArgs(fmt::format_string<T...> fmt, T&&... args) {
+		return fmt::format(fmt, std::forward<T>(args)...);
 	}
 
 }
