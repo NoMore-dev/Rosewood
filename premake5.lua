@@ -13,8 +13,10 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"] = "Rosewood/vendor/GLFW/include"
+IncludeDir["glad"] = "Rosewood/vendor/glad/include"
 
 include "Rosewood/vendor/GLFW"
+include "Rosewood/vendor/glad"
 
 project "Rosewood"
 	location "Rosewood"
@@ -37,12 +39,14 @@ project "Rosewood"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{IncludeDir.GLFW}"
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.glad}"
 	}
 
 	links 
 	{ 
 		"GLFW",
+		"glad",
 		"opengl32.lib"
 	}
 
@@ -54,7 +58,8 @@ project "Rosewood"
 		defines
 		{			
 			"RW_PLATFORM_WINDOWS",
-			"RW_BUILD_DLL";
+			"RW_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
 		}
 
 		postbuildcommands

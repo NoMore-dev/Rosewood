@@ -3,7 +3,7 @@
 #include "Rosewood/Event/ApplicationEvent.h"
 #include "Rosewood/Log/Log.h"
 
-#include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 namespace Rosewood
 {
