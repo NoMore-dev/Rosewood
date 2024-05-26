@@ -7,6 +7,12 @@
     <Filter Include="Rosewood\Event">
       <UniqueIdentifier>{88030364-74D1-F669-5D65-679049D2D2CE}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rosewood\ImGui">
+      <UniqueIdentifier>{61F74564-4DC5-396A-3659-AA9022C615CF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rosewood\ImGui\backends">
+      <UniqueIdentifier>{AB4E82A9-1786-CA40-2090-2E648C46F139}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Rosewood\Layer">
       <UniqueIdentifier>{037F7664-EF4C-6A6A-D8E0-DA90C44D46CF}</UniqueIdentifier>
     </Filter>
@@ -40,6 +46,15 @@
     <ClInclude Include="src\Rosewood\Event\MouseEvent.h">
       <Filter>Rosewood\Event</Filter>
     </ClInclude>
+    <ClInclude Include="src\Rosewood\ImGui\ImGuiLayer.h">
+      <Filter>Rosewood\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rosewood\ImGui\backends\imgui_impl_opengl3.h">
+      <Filter>Rosewood\ImGui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rosewood\ImGui\backends\imgui_impl_opengl3_loader.h">
+      <Filter>Rosewood\ImGui\backends</Filter>
+    </ClInclude>
     <ClInclude Include="src\Rosewood\Layer\Layer.h">
       <Filter>Rosewood\Layer</Filter>
     </ClInclude>
@@ -60,6 +75,12 @@
   <ItemGroup>
     <ClCompile Include="src\Rosewood\Application.cpp">
       <Filter>Rosewood</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Rosewood\ImGui\ImGuiLayer.cpp">
+      <Filter>Rosewood\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Rosewood\ImGui\backends\imgui_impl_opengl3.cpp">
+      <Filter>Rosewood\ImGui\backends</Filter>
     </ClCompile>
     <ClCompile Include="src\Rosewood\Layer\Layer.cpp">
       <Filter>Rosewood\Layer</Filter>

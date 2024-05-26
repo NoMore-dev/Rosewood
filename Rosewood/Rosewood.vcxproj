@@ -80,7 +80,7 @@
       <PrecompiledHeaderFile>rwpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RW_PLATFORM_WINDOWS;RW_BUILD_DLL;GLFW_INCLUDE_NONE;RW_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\glad\include;vendor\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -104,7 +104,7 @@
       <PrecompiledHeaderFile>rwpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RW_PLATFORM_WINDOWS;RW_BUILD_DLL;GLFW_INCLUDE_NONE;RW_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\glad\include;vendor\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -132,7 +132,7 @@
       <PrecompiledHeaderFile>rwpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RW_PLATFORM_WINDOWS;RW_BUILD_DLL;GLFW_INCLUDE_NONE;RW_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;vendor\GLFW\include;vendor\glad\include;vendor\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -163,6 +163,8 @@
     <ClInclude Include="src\Rosewood\Event\Event.h" />
     <ClInclude Include="src\Rosewood\Event\KeyEvent.h" />
     <ClInclude Include="src\Rosewood\Event\MouseEvent.h" />
+    <ClInclude Include="src\Rosewood\ImGui\ImGuiLayer.h" />
+    <ClInclude Include="src\Rosewood\ImGui\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="src\Rosewood\Layer\Layer.h" />
     <ClInclude Include="src\Rosewood\Layer\LayerStack.h" />
     <ClInclude Include="src\Rosewood\Log\Log.h" />
@@ -172,6 +174,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Rosewood\Application.cpp" />
+    <ClCompile Include="src\Rosewood\ImGui\ImGuiLayer.cpp" />
+    <ClCompile Include="src\Rosewood\ImGui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\Rosewood\Layer\Layer.cpp" />
     <ClCompile Include="src\Rosewood\Layer\LayerStack.cpp" />
     <ClCompile Include="src\Rosewood\Log\Log.cpp" />
@@ -186,6 +190,9 @@
     </ProjectReference>
     <ProjectReference Include="vendor\glad\Glad.vcxproj">
       <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
+    </ProjectReference>
+    <ProjectReference Include="vendor\imgui\ImGui.vcxproj">
+      <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
