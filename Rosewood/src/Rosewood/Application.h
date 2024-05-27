@@ -5,6 +5,7 @@
 #include "Rosewood/Layer/LayerStack.h"
 #include "Event/Event.h"
 #include "Rosewood/Window/Window.h"
+#include "Rosewood/Event/ApplicationEvent.h"
 
 namespace Rosewood
 {
@@ -24,6 +25,8 @@ namespace Rosewood
 
 		inline static Application& Get() { return *s_Instance; }
 	private:
+		bool OnWindowClose(WindowCloseEvent& e);
+
 		std::unique_ptr<Window> m_Window;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
