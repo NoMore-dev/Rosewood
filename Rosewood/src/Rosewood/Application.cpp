@@ -2,6 +2,7 @@
 #include "Application.h"
 #include "Rosewood/Event/ApplicationEvent.h"
 #include "Rosewood/Log/Log.h"
+#include "Rosewood/Input/Input.h"
 
 #include <glad/glad.h>
 

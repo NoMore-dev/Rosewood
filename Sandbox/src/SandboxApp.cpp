@@ -10,12 +10,19 @@ public:
 
 	void OnUpdate() override
 	{
-		RW_INFO("ExampleLayer::Update");
+		if (Rosewood::Input::IsKeyPressed(RW_KEY_TAB))
+			RW_TRACE("Tab key is pressed (poll)!");
 	}
 
 	void OnEvent(Rosewood::Event& event) override
 	{
-		RW_TRACE("{0}", event);
+		if (event.GetEventType() == Rosewood::EventType::KeyPressed)
+		{
+			Rosewood::KeyPressedEvent& e = (Rosewood::KeyPressedEvent&)event;
+			if (e.GetKeyCode() == RW_KEY_TAB)
+				RW_TRACE("Tab key is pressed (event)!");
+			RW_TRACE("{0}", (char)e.GetKeyCode());
+		}
 	}
 
 };
