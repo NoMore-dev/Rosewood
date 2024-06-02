@@ -13,11 +13,20 @@
     <Filter Include="Rosewood\ImGui\backends">
       <UniqueIdentifier>{AB4E82A9-1786-CA40-2090-2E648C46F139}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rosewood\Input">
+      <UniqueIdentifier>{36324764-2200-3B6A-0B94-AB90F70017CF}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Rosewood\Layer">
       <UniqueIdentifier>{037F7664-EF4C-6A6A-D8E0-DA90C44D46CF}</UniqueIdentifier>
     </Filter>
     <Filter Include="Rosewood\Log">
       <UniqueIdentifier>{48A0D4DC-3403-6481-DD88-9C37C9CA2F04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rosewood\Renderer">
+      <UniqueIdentifier>{7DAE0F82-E9C4-0D18-323C-99399E91DE9F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rosewood\Shader">
+      <UniqueIdentifier>{BDF80B04-2984-79C8-3295-FCBC9E9FD5C8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Rosewood\Window">
       <UniqueIdentifier>{FED5790D-6A61-E7D1-7372-6AC6DF7C43D2}</UniqueIdentifier>
@@ -52,6 +61,18 @@
     <ClInclude Include="src\Rosewood\ImGui\backends\imgui_impl_opengl3.h">
       <Filter>Rosewood\ImGui\backends</Filter>
     </ClInclude>
+    <ClInclude Include="src\Rosewood\Input\Input.h">
+      <Filter>Rosewood\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rosewood\Input\KeyCodes.h">
+      <Filter>Rosewood\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rosewood\Input\MouseButtonCodes.h">
+      <Filter>Rosewood\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rosewood\Input\WindowsInput.h">
+      <Filter>Rosewood\Input</Filter>
+    </ClInclude>
     <ClInclude Include="src\Rosewood\Layer\Layer.h">
       <Filter>Rosewood\Layer</Filter>
     </ClInclude>
@@ -60,6 +81,15 @@
     </ClInclude>
     <ClInclude Include="src\Rosewood\Log\Log.h">
       <Filter>Rosewood\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rosewood\Renderer\GraphicsContext.h">
+      <Filter>Rosewood\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rosewood\Renderer\OpenGLContext.h">
+      <Filter>Rosewood\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rosewood\Shader\Shader.h">
+      <Filter>Rosewood\Shader</Filter>
     </ClInclude>
     <ClInclude Include="src\Rosewood\Window\Window.h">
       <Filter>Rosewood\Window</Filter>
@@ -79,6 +109,9 @@
     <ClCompile Include="src\Rosewood\ImGui\backends\imgui_impl_opengl3.cpp">
       <Filter>Rosewood\ImGui\backends</Filter>
     </ClCompile>
+    <ClCompile Include="src\Rosewood\Input\WindowsInput.cpp">
+      <Filter>Rosewood\Input</Filter>
+    </ClCompile>
     <ClCompile Include="src\Rosewood\Layer\Layer.cpp">
       <Filter>Rosewood\Layer</Filter>
     </ClCompile>
@@ -87,6 +120,9 @@
     </ClCompile>
     <ClCompile Include="src\Rosewood\Log\Log.cpp">
       <Filter>Rosewood\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Rosewood\Renderer\OpenGLContext.cpp">
+      <Filter>Rosewood\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Rosewood\Window\WindowsWindow.cpp">
       <Filter>Rosewood\Window</Filter>

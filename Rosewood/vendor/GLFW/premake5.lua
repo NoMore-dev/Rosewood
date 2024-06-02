@@ -1,12 +1,13 @@
 project "GLFW"
-    kind "StaticLib"
-    language "C"
+	kind "StaticLib"
+	language "C"
+	staticruntime "on"
 
-    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-    files
-    {
+	files
+	{
 		"include/GLFW/glfw3.h",
 		"include/GLFW/glfw3native.h",
 		"src/glfw_config.h",
@@ -23,15 +24,13 @@ project "GLFW"
 		"src/platform.c",
 		"src/vulkan.c",
 		"src/window.c",
-    }
+	}
 
-    filter "system:windows"
-        buildoptions {}
-        systemversion "latest"
-        staticruntime "On"
+	filter "system:windows"
+		systemversion "latest"
 
-        files
-        {
+		files
+		{
 			"src/win32_init.c",
 			"src/win32_joystick.c",
 			"src/win32_module.c",
@@ -42,12 +41,18 @@ project "GLFW"
 			"src/wgl_context.c",
 			"src/egl_context.c",
 			"src/osmesa_context.c"
-        }
+		}
 
-        defines 
-        { 
-            "_GLFW_WIN32",
-            "_CRT_SECURE_NO_WARNINGS"
-        }
-    filter { "system:windows", "configurations:Release" }
-        buildoptions "/MT"
+		defines 
+		{ 
+			"_GLFW_WIN32",
+			"_CRT_SECURE_NO_WARNINGS"
+		}
+	
+	filter "configurations:Debug"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		runtime "Release"
+		optimize "on"

@@ -1,10 +1,14 @@
 #pragma once
 
 #ifdef RW_PLATFORM_WINDOWS
-	#ifdef RW_BUILD_DLL
-		#define RW_API __declspec(dllexport)
+	#if RW_DYNAMIC_LINK
+		#ifdef RW_BUILD_DLL
+			#define RW_API __declspec(dllexport)
+		#else
+			#define RW_API __declspec(dllimport)
+		#endif
 	#else
-		#define RW_API __declspec(dllimport)
+		#define RW_API
 	#endif
 #else
 	#error Rosewood only supports windows !

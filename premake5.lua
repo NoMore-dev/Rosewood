@@ -16,6 +16,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Rosewood/vendor/GLFW/include"
 IncludeDir["glad"] = "Rosewood/vendor/glad/include"
 IncludeDir["imgui"] = "Rosewood/vendor/imgui"
+IncludeDir["glm"] = "Rosewood/vendor/glm"
 
 include "Rosewood/vendor/GLFW"
 include "Rosewood/vendor/glad"
@@ -23,15 +24,21 @@ include "Rosewood/vendor/imgui"
 
 project "Rosewood"
 	location "Rosewood"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
-	staticruntime "off"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	pchheader "rwpch.h"
 	pchsource "Rosewood/src/rwpch.cpp"
+
+	defines
+	{			
+		"_CRT_SECURE_NO_WARNINGS"
+	}
 
 	files
 	{
@@ -45,7 +52,8 @@ project "Rosewood"
 		"%{prj.name}/vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glad}",
-		"%{IncludeDir.imgui}"
+		"%{IncludeDir.imgui}",
+		"%{IncludeDir.glm}"
 	}
 
 	links 
@@ -57,7 +65,6 @@ project "Rosewood"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
 		systemversion "latest"
 
 		defines
@@ -67,32 +74,28 @@ project "Rosewood"
 			"GLFW_INCLUDE_NONE"
 		}
 
-		postbuildcommands
-		{
-			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/\"")
-		}
-
 	filter "configurations:Debug"
 		defines "RW_DEBUG"
 		runtime "Debug"
-		symbols "On"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "RW_RELEASE"
 		runtime "Release"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "RW_DIST"
 		runtime "Release"
-		optimize "On"
+		optimize "on"
 
 
 project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
-	staticruntime "off"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -106,7 +109,8 @@ project "Sandbox"
 	includedirs
 	{
 		"Rosewood/vendor/spdlog/include",
-		"Rosewood/src"
+		"Rosewood/src",
+		"%{IncludeDir.glm}"
 	}
 
 	links
@@ -115,7 +119,6 @@ project "Sandbox"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
 		systemversion "latest"
 
 		defines
@@ -126,14 +129,14 @@ project "Sandbox"
 	filter "configurations:Debug"
 		defines "RW_DEBUG"
 		runtime "Debug"
-		symbols "On"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "RW_RELEASE"
 		runtime "Release"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "RW_DIST"
 		runtime "Release"
-		optimize "On"
+		optimize "on"

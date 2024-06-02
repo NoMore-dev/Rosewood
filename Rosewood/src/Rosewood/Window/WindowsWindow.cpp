@@ -5,7 +5,7 @@
 #include "Rosewood/Event/MouseEvent.h"
 #include "Rosewood/Event/ApplicationEvent.h"
 
-#include <glad/glad.h>
+#include "Rosewood/Renderer/OpenGLContext.h"
 
 namespace Rosewood {
 
@@ -49,10 +49,9 @@ namespace Rosewood {
 		}
 
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);
 
-		int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-		RW_CORE_ASSERT(status, "Failed to initialized Glad!");
+		m_Context = new OpenGLContext(m_Window);
+		m_Context->Init();
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
@@ -160,7 +159,7 @@ namespace Rosewood {
 	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
