@@ -160,9 +160,12 @@
     <ClInclude Include="src\Rosewood\Layer\Layer.h" />
     <ClInclude Include="src\Rosewood\Layer\LayerStack.h" />
     <ClInclude Include="src\Rosewood\Log\Log.h" />
-    <ClInclude Include="src\Rosewood\Renderer\GraphicsContext.h" />
-    <ClInclude Include="src\Rosewood\Renderer\OpenGLContext.h" />
-    <ClInclude Include="src\Rosewood\Shader\Shader.h" />
+    <ClInclude Include="src\Rosewood\Renderer\Buffer\Buffer.h" />
+    <ClInclude Include="src\Rosewood\Renderer\Buffer\OpenGLBuffer.h" />
+    <ClInclude Include="src\Rosewood\Renderer\Context\GraphicsContext.h" />
+    <ClInclude Include="src\Rosewood\Renderer\Context\OpenGLContext.h" />
+    <ClInclude Include="src\Rosewood\Renderer\Renderer.h" />
+    <ClInclude Include="src\Rosewood\Renderer\Shader\Shader.h" />
     <ClInclude Include="src\Rosewood\Window\Window.h" />
     <ClInclude Include="src\Rosewood\Window\WindowsWindow.h" />
     <ClInclude Include="src\rwpch.h" />
@@ -175,7 +178,11 @@
     <ClCompile Include="src\Rosewood\Layer\Layer.cpp" />
     <ClCompile Include="src\Rosewood\Layer\LayerStack.cpp" />
     <ClCompile Include="src\Rosewood\Log\Log.cpp" />
-    <ClCompile Include="src\Rosewood\Renderer\OpenGLContext.cpp" />
+    <ClCompile Include="src\Rosewood\Renderer\Buffer\Buffer.cpp" />
+    <ClCompile Include="src\Rosewood\Renderer\Buffer\OpenGLBuffer.cpp" />
+    <ClCompile Include="src\Rosewood\Renderer\Context\OpenGLContext.cpp" />
+    <ClCompile Include="src\Rosewood\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Rosewood\Renderer\Shader\Shader.cpp" />
     <ClCompile Include="src\Rosewood\Window\WindowsWindow.cpp" />
     <ClCompile Include="src\rwpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

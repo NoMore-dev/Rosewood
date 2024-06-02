@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Rosewood/Renderer/GraphicsContext.h"
+#include "Rosewood/Renderer/Context/GraphicsContext.h"
 
 struct GLFWwindow;
 

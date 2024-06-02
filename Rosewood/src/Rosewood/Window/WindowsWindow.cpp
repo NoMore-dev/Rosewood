@@ -5,7 +5,7 @@
 #include "Rosewood/Event/MouseEvent.h"
 #include "Rosewood/Event/ApplicationEvent.h"
 
-#include "Rosewood/Renderer/OpenGLContext.h"
+#include "Rosewood/Renderer/Context/OpenGLContext.h"
 
 namespace Rosewood {
 

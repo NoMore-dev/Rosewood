@@ -4,7 +4,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Rosewood/Renderer/GraphicsContext.h"
+#include "Rosewood/Renderer/Context/GraphicsContext.h"
 
 namespace Rosewood {
 
