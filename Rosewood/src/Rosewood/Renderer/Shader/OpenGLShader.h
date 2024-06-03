@@ -1,23 +1,27 @@
 #pragma once
 
+#include "Rosewood/Renderer/Shader/Shader.h"
+
 namespace Rosewood
 {
-    class Shader
+    class OpenGLShader : public Shader
     {
     public:
-        virtual ~Shader() {};
+        OpenGLShader(const char* vertexPath, const char* fragmentPath);
 
-        virtual void Bind() = 0;
-        virtual void Unbind() = 0;
+        ~OpenGLShader();
 
-        static Shader* Create(const char* vertexPath, const char* fragmentPath);
+        void Bind() override;
 
-        //TODO:
+        void Unbind() override;
+
         // utility uniform functions
         //void SetBool(const std::string& name, bool value) const;
         //void SetInt(const std::string& name, int value) const;
         //void SetFloat(const std::string& name, float value) const;
         //void SetVec3(const std::string& name, glm::vec3 value) const;
         //void SetMat4(const std::string& name, glm::mat4 value) const;
+    private:
+        uint32_t m_RendererID;
     };
 }

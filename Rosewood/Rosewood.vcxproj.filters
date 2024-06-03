@@ -82,15 +82,6 @@
     <ClInclude Include="src\Rosewood\Log\Log.h">
       <Filter>Rosewood\Log</Filter>
     </ClInclude>
-    <ClInclude Include="src\Rosewood\Renderer\GraphicsContext.h">
-      <Filter>Rosewood\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Rosewood\Renderer\OpenGLContext.h">
-      <Filter>Rosewood\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Rosewood\Shader\Shader.h">
-      <Filter>Rosewood\Shader</Filter>
-    </ClInclude>
     <ClInclude Include="src\Rosewood\Window\Window.h">
       <Filter>Rosewood\Window</Filter>
     </ClInclude>
@@ -98,6 +89,13 @@
       <Filter>Rosewood\Window</Filter>
     </ClInclude>
     <ClInclude Include="src\rwpch.h" />
+    <ClInclude Include="src\Rosewood\Renderer\Buffer\Buffer.h" />
+    <ClInclude Include="src\Rosewood\Renderer\Buffer\OpenGLBuffer.h" />
+    <ClInclude Include="src\Rosewood\Renderer\Context\GraphicsContext.h" />
+    <ClInclude Include="src\Rosewood\Renderer\Context\OpenGLContext.h" />
+    <ClInclude Include="src\Rosewood\Renderer\Renderer.h" />
+    <ClInclude Include="src\Rosewood\Renderer\Shader\Shader.h" />
+    <ClInclude Include="src\Rosewood\Renderer\Shader\OpenGLShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Rosewood\Application.cpp">
@@ -121,12 +119,15 @@
     <ClCompile Include="src\Rosewood\Log\Log.cpp">
       <Filter>Rosewood\Log</Filter>
     </ClCompile>
-    <ClCompile Include="src\Rosewood\Renderer\OpenGLContext.cpp">
-      <Filter>Rosewood\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="src\Rosewood\Window\WindowsWindow.cpp">
       <Filter>Rosewood\Window</Filter>
     </ClCompile>
     <ClCompile Include="src\rwpch.cpp" />
+    <ClCompile Include="src\Rosewood\Renderer\Buffer\Buffer.cpp" />
+    <ClCompile Include="src\Rosewood\Renderer\Buffer\OpenGLBuffer.cpp" />
+    <ClCompile Include="src\Rosewood\Renderer\Context\OpenGLContext.cpp" />
+    <ClCompile Include="src\Rosewood\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Rosewood\Renderer\Shader\Shader.cpp" />
+    <ClCompile Include="src\Rosewood\Renderer\Shader\OpenGLShader.cpp" />
   </ItemGroup>
 </Project>
