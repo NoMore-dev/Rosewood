@@ -56,27 +56,31 @@ namespace Rosewood {
 
 	void ImGuiLayer::OnDetach()
 	{
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui::DestroyContext();
 
 	}
 
-	void ImGuiLayer::OnUpdate()
+	void ImGuiLayer::OnBegin()
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
 		io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
 
-		float time = (float)glfwGetTime();
-		io.DeltaTime = m_Time > 0.0f ? (time - m_Time) : (1.0f / 60.0f);
-		m_Time = time;
-
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui::NewFrame();
+	}
 
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
-
+	void ImGuiLayer::OnEnd()
+	{
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	}
+
+	void ImGuiLayer::OnImGuiRender()
+	{
+		//static bool show = true;
+		//ImGui::ShowDemoWindow(&show);
 	}
 
 	void ImGuiLayer::OnEvent(Event& event)

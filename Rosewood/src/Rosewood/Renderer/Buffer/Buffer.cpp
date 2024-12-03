@@ -8,12 +8,12 @@ namespace Rosewood
 
 	// VertexBuffer //////////////////////////////////////////////////////////////
 
-	VertexBuffer* VertexBuffer::Create(float* vertices, uint32_t size)
+	Ref<VertexBuffer> VertexBuffer::Create(BYTE* vertices, uint32_t size)
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::None: RW_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::OpenGL: return new OpenGLVertexBuffer(vertices, size);
+		case RendererAPI::API::None: RW_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLVertexBuffer>(vertices, size);
 		}
 
 		RW_CORE_ASSERT(false, "Unkown RendererAPI!");
@@ -23,12 +23,27 @@ namespace Rosewood
 
 	// IndexBuffer //////////////////////////////////////////////////////////////
 
-	IndexBuffer* IndexBuffer::Create(uint32_t* indices, uint32_t size)
+	Ref<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t count)
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::None: RW_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::OpenGL: return new OpenGLIndexBuffer(indices, size);
+		case RendererAPI::API::None: RW_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLIndexBuffer>(indices, count);
+		}
+
+		RW_CORE_ASSERT(false, "Unkown RendererAPI!");
+		return nullptr;
+	}
+
+
+	// StorageBuffer //////////////////////////////////////////////////////////////
+
+	Ref<StorageBuffer> StorageBuffer::Create(BYTE* data, uint32_t size)
+	{
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::None: RW_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLStorageBuffer>(data, size);
 		}
 
 		RW_CORE_ASSERT(false, "Unkown RendererAPI!");

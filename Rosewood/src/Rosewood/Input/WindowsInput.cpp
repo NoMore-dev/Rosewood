@@ -43,4 +43,15 @@ namespace Rosewood {
 		return y;
 	}
 
+	void WindowsInput::InitImpl()
+	{
+		m_LastFrameMousePosition = GetMousePositionImpl();
+	}
+
+	void WindowsInput::UpdateMousePositionDelta()
+	{
+		s_MousePositionDelta = { GetMouseXImpl() - m_LastFrameMousePosition.first, GetMouseYImpl() - m_LastFrameMousePosition.second };
+		m_LastFrameMousePosition = GetMousePositionImpl();
+	}
+
 }

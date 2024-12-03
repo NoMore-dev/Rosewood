@@ -12,6 +12,28 @@
 #include "Rosewood/Input/KeyCodes.h"
 #include "Rosewood/Input/MouseButtonCodes.h"
 
+#include "Rosewood/Scene/Scene.h"
+#include "Rosewood/Scene/Components.h"
+#include "Rosewood/Transform/Transform.h"
+
+//--Renderer-----------------------------
+#include "Rosewood/Renderer/Renderer.h"
+#include "Rosewood/Renderer/RenderCommand.h"
+
+#include "Rosewood/Renderer/Shader/Shader.h"
+#include "Rosewood/Renderer/VertexArray/VertexArray.h"
+#include "Rosewood/Renderer/Buffer/Buffer.h"
+#include "Rosewood/Renderer/Texture/Texture.h"
+#include "Rosewood/Renderer/Mesh/Mesh.h"
+#include "Rosewood/Renderer/Batch/Batch.h"
+
+#include "Rosewood/Renderer/Camera/Camera.h"
+#include "Rosewood/Renderer/Camera/PerspectiveCamera.h"
+#include "Rosewood/Renderer/Camera/OrthographicCamera.h"
+
+#include "Rosewood/Renderer/Lighting/Light.h"
+//---------------------------------------
+
 //--Entry Point--------------------------
 #include "Rosewood/Entrypoint.h"
 //---------------------------------------

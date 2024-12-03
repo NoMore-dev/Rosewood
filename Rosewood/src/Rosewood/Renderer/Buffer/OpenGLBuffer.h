@@ -10,7 +10,7 @@ namespace Rosewood
 	class OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
-		OpenGLVertexBuffer(float* vertices, uint32_t size);
+		OpenGLVertexBuffer(BYTE* vertices, uint32_t size);
 		~OpenGLVertexBuffer();
 
 		void Bind() override;
@@ -41,6 +41,21 @@ namespace Rosewood
 	private:
 		uint32_t m_RendererID;
 		uint32_t m_Count;
+	};
+
+	// StorageBuffer //////////////////////////////////////////////////////////////
+
+	class OpenGLStorageBuffer : public StorageBuffer
+	{
+	public:
+		OpenGLStorageBuffer(BYTE* data, uint32_t size);
+		~OpenGLStorageBuffer();
+
+		void Bind() override;
+		void Unbind() override;
+
+	private:
+		uint32_t m_BufferID;
 	};
 
 }

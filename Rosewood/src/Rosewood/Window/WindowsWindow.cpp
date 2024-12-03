@@ -177,4 +177,25 @@ namespace Rosewood {
 		return m_Data.VSync;
 	}
 
+	void WindowsWindow::SetTitle(const std::string& title)
+	{
+		m_Data.Title = title;
+		glfwSetWindowTitle(m_Window, title.c_str());
+	}
+
+	void WindowsWindow::DisableCursor()
+	{
+		glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	}
+
+	void WindowsWindow::RestoreCursor()
+	{
+		glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+
+	float WindowsWindow::GetTime() const
+	{
+		return (float)glfwGetTime();
+	}
+
 }

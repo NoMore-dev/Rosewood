@@ -15,11 +15,11 @@ namespace Rosewood {
 
 		void OnAttach();
 		void OnDetach();
-		void OnUpdate();
+		void OnBegin();
+		void OnEnd();
+		void OnImGuiRender() override;
 		void OnEvent(Event& event);
 	private:
-		float m_Time = 0.0f;
-
 		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
 		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
 		bool OnMouseMovedEvent(MouseMovedEvent& e);

@@ -1,4 +1,4 @@
-#include "rwpch.h"
+﻿#include "rwpch.h"
 #include "OpenGLBuffer.h"
 
 #include <glad/glad.h>
@@ -7,7 +7,7 @@ namespace Rosewood
 {
 	// VertexBuffer //////////////////////////////////////////////////////////////
 
-	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
+	OpenGLVertexBuffer::OpenGLVertexBuffer(BYTE* vertices, uint32_t size)
 	{
 		glCreateBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
@@ -53,6 +53,32 @@ namespace Rosewood
 	void OpenGLIndexBuffer::Unbind()
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	}
+
+
+	// StorageBuffer //////////////////////////////////////////////////////////////
+
+	OpenGLStorageBuffer::OpenGLStorageBuffer(BYTE* data, uint32_t size)
+	{
+		glCreateBuffers(1, &m_BufferID);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_BufferID);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, size, data, GL_STATIC_DRAW);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_BufferID);
+	}
+
+	OpenGLStorageBuffer::~OpenGLStorageBuffer()
+	{
+		glDeleteBuffers(1, &m_BufferID);
+	}
+
+	void OpenGLStorageBuffer::Bind()
+	{
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_BufferID);
+	}
+
+	void OpenGLStorageBuffer::Unbind()
+	{
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 
 }
