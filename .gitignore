@@ -6,7 +6,5 @@ Sandbox/assets/
 
 # Files
 *.user
-*.vcxproj
-*.vcxproj.filters
 Sandbox/imgui.ini
 TODO.txt

@@ -6,8 +6,6 @@
 
 #include "Rosewood/Renderer/Renderer.h"
 
-#include <GLFW/glfw3.h>
-
 namespace Rosewood
 {
 #define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)

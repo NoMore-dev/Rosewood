@@ -11,10 +11,6 @@ namespace Rosewood {
 		~PerspectiveCamera() = default;
 
 		const glm::mat4& GetProjectionMatrix() override { return m_ProjectionMatrix; }
-		glm::mat4 GetViewMatrix() override { return glm::inverse(m_Transform.GetMatrix()); }
-		glm::mat4 GetViewProjectionMatrix() override { return GetProjectionMatrix()*GetViewMatrix(); }
-
-		TransformData& GetTransform() override  { return m_Transform; }
 
 		void SetFov(float fov) { m_Settings.fov = fov; RecomputeProjectionMatrix();};
 
@@ -23,7 +19,6 @@ namespace Rosewood {
 
 	private:
 		glm::mat4 m_ProjectionMatrix;
-		TransformData m_Transform = TransformData();
 
 		struct PerspectiveSettings
 		{

@@ -1,5 +1,5 @@
 #pragma once
-#include "Rosewood/Transform/Transform.h"
+#include "Rosewood/Scene/Transform/Transform.h"
 #include "Rosewood/Renderer/Mesh/Mesh.h"
 #include "Rosewood/Renderer/VertexArray/VertexArray.h"
 #include "Rosewood/Renderer/Camera/Camera.h"
@@ -7,30 +7,36 @@
 
 namespace Rosewood
 {
+	//#### Common ########################################################################
+
+	struct TagComponent
+	{
+
+	};
 
 	struct TransformComponent
 	{
-		TransformData& Transform;
+		TransformData Transform = TransformData{};
 
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
-		TransformComponent(TransformData& transform)
+		TransformComponent(TransformData transform)
 			: Transform(transform) {}
+		TransformComponent(glm::mat4 transformMatrix)
+			: Transform(transformMatrix) {}
 
 		operator const glm::mat4& () { return Transform.GetMatrix(); }
 	};
-
-
 
 	//#### Rendering #####################################################################
 
 	struct CameraComponent
 	{
-		Camera& CameraData;
+		Ref<Camera> CameraData;
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
-		CameraComponent(Camera& camera)
+		CameraComponent(Ref<Camera> camera)
 			: CameraData(camera) {}
 	};
 

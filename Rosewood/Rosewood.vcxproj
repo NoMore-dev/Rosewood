@@ -182,7 +182,7 @@
     <ClInclude Include="src\Rosewood\Renderer\VertexArray\VertexArray.h" />
     <ClInclude Include="src\Rosewood\Scene\Components.h" />
     <ClInclude Include="src\Rosewood\Scene\Scene.h" />
-    <ClInclude Include="src\Rosewood\Transform\Transform.h" />
+    <ClInclude Include="src\Rosewood\Scene\Transform\Transform.h" />
     <ClInclude Include="src\Rosewood\Window\Window.h" />
     <ClInclude Include="src\Rosewood\Window\WindowsWindow.h" />
     <ClInclude Include="src\rwpch.h" />
@@ -214,7 +214,7 @@
     <ClCompile Include="src\Rosewood\Renderer\VertexArray\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\Rosewood\Renderer\VertexArray\VertexArray.cpp" />
     <ClCompile Include="src\Rosewood\Scene\Scene.cpp" />
-    <ClCompile Include="src\Rosewood\Transform\Transform.cpp" />
+    <ClCompile Include="src\Rosewood\Scene\Transform\Transform.cpp" />
     <ClCompile Include="src\Rosewood\Window\WindowsWindow.cpp" />
     <ClCompile Include="src\rwpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

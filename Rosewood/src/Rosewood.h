@@ -14,7 +14,7 @@
 
 #include "Rosewood/Scene/Scene.h"
 #include "Rosewood/Scene/Components.h"
-#include "Rosewood/Transform/Transform.h"
+#include "Rosewood/Scene/Transform/Transform.h"
 
 //--Renderer-----------------------------
 #include "Rosewood/Renderer/Renderer.h"

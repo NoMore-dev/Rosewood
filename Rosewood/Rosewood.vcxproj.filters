@@ -177,7 +177,7 @@
     <ClInclude Include="src\Rosewood\Renderer\VertexArray\VertexArray.h">
       <Filter>src\Rosewood\Renderer\VertexArray</Filter>
     </ClInclude>
-    <ClInclude Include="src\Rosewood\Transform\Transform.h">
+    <ClInclude Include="src\Rosewood\Scene\Transform\Transform.h">
       <Filter>src\Rosewood\Scene\Transform</Filter>
     </ClInclude>
     <ClInclude Include="src\Rosewood\Window\Window.h">
@@ -266,7 +266,7 @@
     <ClCompile Include="src\Rosewood\Renderer\VertexArray\VertexArray.cpp">
       <Filter>src\Rosewood\Renderer\VertexArray</Filter>
     </ClCompile>
-    <ClCompile Include="src\Rosewood\Transform\Transform.cpp">
+    <ClCompile Include="src\Rosewood\Scene\Transform\Transform.cpp">
       <Filter>src\Rosewood\Scene\Transform</Filter>
     </ClCompile>
     <ClCompile Include="src\Rosewood\Window\WindowsWindow.cpp">
