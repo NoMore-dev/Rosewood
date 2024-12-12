@@ -169,6 +169,7 @@
     <ClInclude Include="src\Rosewood\Renderer\Context\GraphicsContext.h" />
     <ClInclude Include="src\Rosewood\Renderer\Context\OpenGLContext.h" />
     <ClInclude Include="src\Rosewood\Renderer\Lighting\Light.h" />
+    <ClInclude Include="src\Rosewood\Renderer\Material\Material.h" />
     <ClInclude Include="src\Rosewood\Renderer\Mesh\Mesh.h" />
     <ClInclude Include="src\Rosewood\Renderer\OpenGLRendererAPI.h" />
     <ClInclude Include="src\Rosewood\Renderer\RenderCommand.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="src\Rosewood\Renderer\Camera\OrthographicCamera.cpp" />
     <ClCompile Include="src\Rosewood\Renderer\Camera\PerspectiveCamera.cpp" />
     <ClCompile Include="src\Rosewood\Renderer\Context\OpenGLContext.cpp" />
+    <ClCompile Include="src\Rosewood\Renderer\Material\Material.cpp" />
     <ClCompile Include="src\Rosewood\Renderer\Mesh\Mesh.cpp" />
     <ClCompile Include="src\Rosewood\Renderer\OpenGLRendererAPI.cpp" />
     <ClCompile Include="src\Rosewood\Renderer\RenderCommand.cpp" />

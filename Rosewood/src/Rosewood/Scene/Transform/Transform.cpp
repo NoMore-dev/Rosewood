@@ -6,9 +6,10 @@
 namespace Rosewood
 {
 
-	TransformData::TransformData(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale):
+	TransformData::TransformData(glm::vec3 translation, glm::quat rotation, glm::vec3 scale):
 		m_Translation(translation), m_Rotation(rotation), m_Scale(scale)
 	{
+		m_RotationEuler = glm::eulerAngles(m_Rotation);
 		RecalculateMatrix();
 	}
 

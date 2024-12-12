@@ -1,9 +1,9 @@
 #version 460 core
 
 
-#define MAX_POINT_LIGHTS 5
-#define MAX_SPOT_LIGHTS  5
-#define MAX_DIR_LIGHTS   1
+#define MAX_POINT_LIGHTS 64
+#define MAX_SPOT_LIGHTS  64
+#define MAX_DIR_LIGHTS   8
 
 
 struct Pointlight {
@@ -13,9 +13,7 @@ struct Pointlight {
     vec3 diffuse;
     vec3 specular;
 
-    float constant;
-    float linear;
-    float quadratic;
+    vec3 attenuationParams;
 };
 
 struct Directionallight {
@@ -29,16 +27,13 @@ struct Directionallight {
 struct Spotlight {
     vec3 position;
     vec3 direction;
-    float innerCutOff;
-    float outerCutOff;
+    vec2 cutoff;
 
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
 
-    float constant;
-    float linear;
-    float quadratic;
+    vec3 attenuationParams;
 };
 
 
@@ -50,13 +45,13 @@ out vec4 FragColor;
 
 uniform vec4 u_Color;
 
-uniform int u_PointLightsCount = 0;
-uniform int u_DirLightsCount = 0;
-uniform int u_SpotLightsCount = 0;
-
-uniform Pointlight[MAX_POINT_LIGHTS] u_Pointlights;
-uniform Directionallight[MAX_DIR_LIGHTS] u_Directionallights;
-uniform Spotlight[MAX_SPOT_LIGHTS] u_Spotlights;
+layout (std140, binding = 1) uniform Lights
+{
+    vec3 ub_LightsCounts;
+    Pointlight[MAX_POINT_LIGHTS] ub_PointLights;
+    Spotlight[MAX_SPOT_LIGHTS] ub_SpotLights;
+    Directionallight[MAX_DIR_LIGHTS] ub_DirLights;
+};
 
 
 vec3[3] cumulativeLightComputation;
@@ -72,12 +67,12 @@ void main()
     cumulativeLightComputation[1] = vec3(0);
     cumulativeLightComputation[2] = vec3(0);
 
-    for(int i = 0; i < u_PointLightsCount; i++)
-        ComputePointlight(u_Pointlights[i]);
-    for(int i = 0; i < u_DirLightsCount; i++)
-        ComputeDirectionallight(u_Directionallights[i]);
-    for(int i = 0; i < u_SpotLightsCount; i++)
-        ComputeSpotlight(u_Spotlights[i]);
+    for(int i = 0; i < ub_LightsCounts.x; i++)
+        ComputePointlight(ub_PointLights[i]);
+    for(int i = 0; i < ub_LightsCounts.y; i++)
+        ComputeDirectionallight(ub_DirLights[i]);
+    for(int i = 0; i < ub_LightsCounts.z; i++)
+        ComputeSpotlight(ub_SpotLights[i]);
 
     vec3 result = (cumulativeLightComputation[0] + cumulativeLightComputation[1]) * u_Color.xyz;
     FragColor = vec4(result, 1.0f);
@@ -97,7 +92,7 @@ void ComputePointlight(Pointlight light){
     // vec3 specular = light.specular * spec ;
 
     float distance = length(light.position - v_WorldPosition);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    float attenuation = 1.0 / (light.attenuationParams.x + light.attenuationParams.y * distance + light.attenuationParams.z * (distance * distance));
 
     ambient *= attenuation;
     diffuse *= attenuation;
@@ -138,15 +133,15 @@ void ComputeSpotlight(Spotlight light){
     // vec3 specular = light.specular * spec ;
 
     float distance = length(light.position - v_WorldPosition);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    float attenuation = 1.0 / (light.attenuationParams.x + light.attenuationParams.y * distance + light.attenuationParams.z * (distance * distance));
 
     ambient *= attenuation;
     diffuse *= attenuation;
     // specular *= attenuation;
 
     float theta = dot(lightDir, normalize(-light.direction));
-    float epsilon = light.innerCutOff - light.outerCutOff;
-    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+    float epsilon = light.cutoff.x - light.cutoff.y;
+    float intensity = clamp((theta - light.cutoff.y) / epsilon, 0.0, 1.0);
 
     diffuse *= intensity;
     // specular *= intensity;

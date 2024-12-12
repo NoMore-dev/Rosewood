@@ -81,4 +81,24 @@ namespace Rosewood
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 
+	// UniformBuffer //////////////////////////////////////////////////////////////
+
+	OpenGLUniformBuffer::OpenGLUniformBuffer(uint32_t size, uint32_t binding)
+	{
+		glCreateBuffers(1, &m_BufferID);
+		glBindBuffer(GL_UNIFORM_BUFFER, m_BufferID);
+		glBufferData(GL_UNIFORM_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+		glBindBufferBase(GL_UNIFORM_BUFFER, binding, m_BufferID);
+	}
+
+	OpenGLUniformBuffer::~OpenGLUniformBuffer()
+	{
+		glDeleteBuffers(1, &m_BufferID);
+	}
+
+	void OpenGLUniformBuffer::SetData(const void* data, uint32_t size, uint32_t offset)
+	{
+		glNamedBufferSubData(m_BufferID, offset, size, data);
+	}
+
 }

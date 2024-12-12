@@ -16,17 +16,29 @@ namespace Rosewood
 
 		if (HasPrimaryCamera())
 		{
-			Ref<Camera> cameraData = GetComponent<CameraComponent>(m_PrimaryCameraEntityID).CameraData;
+			Ref<Camera> cameraData = GetComponent<CameraComponent>(m_PrimaryCameraEntityID).CameraRef;
 			TransformComponent cameraTransform = GetComponent<TransformComponent>(m_PrimaryCameraEntityID);
 
-			Rosewood::Renderer::BeginScene(*cameraData, cameraTransform);
-
-			Rosewood::Renderer::PrepareShader(m_Shader);
-			auto group = m_Registry.group<TransformComponent, MeshComponent>();
-			for (auto&& [entityID, transform, mesh] : group.each())
+			std::vector<PointLight> pointLights;
+			std::vector<SpotLight> spotLights;
+			std::vector<DirectionalLight> dirLights;
+			auto view = m_Registry.view<PointLightComponent>();
+			for (auto&& [entityID, light] : view.each())
 			{
-				Rosewood::Renderer::Submit(m_Shader, mesh.VAO, transform);
+				pointLights.push_back(light.LightData);
+				TransformData transform = GetComponent<TransformComponent>(entityID).Transform;
+				pointLights.back().Position = glm::vec4(transform.GetTranslation(), 0.f);
 			}
+			// TODO : manage other light types
+
+			Rosewood::Renderer::BeginScene(*cameraData, cameraTransform, pointLights, spotLights, dirLights);
+
+			auto group2 = m_Registry.group<TransformComponent, MeshComponent, MaterialComponent>();
+			for (auto&& [entityID, transform, mesh, material] : group2.each())
+			{
+				Rosewood::Renderer::Submit(material.MaterialRef, mesh.VAO, &transform.Transform.GetMatrix());
+			}
+			Rosewood::Renderer::DrawScene();
 
 			Rosewood::Renderer::EndScene();
 		}
@@ -45,6 +57,7 @@ namespace Rosewood
 	{
 		return (m_Registry.valid(m_PrimaryCameraEntityID) && HasComponent<CameraComponent>(m_PrimaryCameraEntityID) && HasComponent<TransformComponent>(m_PrimaryCameraEntityID));
 	}
+
 
 	EntityID Scene::GetPrimaryCameraID() const
 	{

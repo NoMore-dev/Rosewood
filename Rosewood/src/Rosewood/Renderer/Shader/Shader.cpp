@@ -1,5 +1,3 @@
-#pragma once
-
 #include "rwpch.h"
 #include "Shader.h"
 

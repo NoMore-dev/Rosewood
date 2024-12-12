@@ -7,35 +7,42 @@ public:
 	MainLayer()
 		: Layer("Main")
 	{
-		m_ShaderLibrary = Rosewood::ShaderLibrary();
-		Rosewood::Ref<Rosewood::Shader> shader = m_ShaderLibrary.Load(Rosewood::ShaderComponentPaths{ "../Rosewood/shaders/simple.vert", "../Rosewood/shaders/flat.frag"}, "simple/flat");
-		shader->Bind();
-		shader->UploadUniformFloat4("u_Color", glm::vec4{ .21f, .2f, .2f, 1.f });
-
-		Rosewood::MeshData mesh = Rosewood::MeshData("assets/meshes/weapon.dat", Rosewood::MeshData::FileFormat::CUSTOM);
-
 		m_PrimaryScene = std::make_shared<Rosewood::Scene>();
+		m_ShaderLibrary = Rosewood::ShaderLibrary();
 
-		Rosewood::TransformData cameraTransform = Rosewood::TransformData{};
-		cameraTransform.SetTranslation(glm::vec3(40.f, 0.f, 0.f));
-		cameraTransform.SetRotationEuler(glm::vec3(0.f, glm::pi<float>() / 2.f, 0.f));
-
-		Rosewood::Ref<Rosewood::PerspectiveCamera> camera = std::make_shared<Rosewood::PerspectiveCamera>();
-
-		Rosewood::EntityID cameraEntityID = m_PrimaryScene->CreateEntity();
-		m_PrimaryScene->AddComponent<Rosewood::TransformComponent>(cameraEntityID, cameraTransform);
-		m_PrimaryScene->AddComponent<Rosewood::CameraComponent>(cameraEntityID, camera);
-		m_PrimaryScene->SetPrimaryCameraID(cameraEntityID);
-
+		// Meshes
+		Rosewood::Ref<Rosewood::Shader> shader = m_ShaderLibrary.Load(Rosewood::ShaderComponentPaths{ "../Rosewood/shaders/simple.vert", "../Rosewood/shaders/flat.frag"}, "simple/flat");
+		Rosewood::Ref<Rosewood::Material> material = std::make_shared<Rosewood::Material>(0, shader);
+		Rosewood::Ref<Rosewood::Material> material2 = std::make_shared<Rosewood::Material>(1, shader);
+		Rosewood::MeshData mesh = Rosewood::MeshData("assets/meshes/weapon.dat", Rosewood::MeshData::FileFormat::CUSTOM);
 		for (int i = 0; i < 1; ++i) {
 			Rosewood::EntityID entity = m_PrimaryScene->CreateEntity();
 			glm::mat4 t = glm::mat4(1.0f);
 			t = glm::translate(t, glm::vec3(0.f, (float)i * 3, 0.f));
 			m_PrimaryScene->AddComponent<Rosewood::TransformComponent>(entity, t);
 			m_PrimaryScene->AddComponent<Rosewood::MeshComponent>(entity, mesh.MakeVertexArray());
+
+			if (i % 2)
+				m_PrimaryScene->AddComponent<Rosewood::MaterialComponent>(entity, material);
+			else
+				m_PrimaryScene->AddComponent<Rosewood::MaterialComponent>(entity, material2);
 		}
 
-		m_PrimaryScene->m_Shader = shader;
+		//Camera
+		Rosewood::TransformData cameraTransform = Rosewood::TransformData{};
+		cameraTransform.SetTranslation(glm::vec3(40.f, 0.f, 0.f));
+		cameraTransform.SetRotationEuler(glm::vec3(0.f, glm::pi<float>() / 2.f, 0.f));
+		Rosewood::Ref<Rosewood::PerspectiveCamera> camera = std::make_shared<Rosewood::PerspectiveCamera>();
+		Rosewood::EntityID cameraEntityID = m_PrimaryScene->CreateEntity();
+		m_PrimaryScene->AddComponent<Rosewood::TransformComponent>(cameraEntityID, cameraTransform);
+		m_PrimaryScene->AddComponent<Rosewood::CameraComponent>(cameraEntityID, camera);
+		m_PrimaryScene->SetPrimaryCameraID(cameraEntityID);
+
+		//Lights
+		Rosewood::EntityID pointLightEntity = m_PrimaryScene->CreateEntity();
+		m_PrimaryScene->AddComponent<Rosewood::PointLightComponent>(pointLightEntity, glm::vec4(.1f), glm::vec3(.5f), glm::vec3(0.f), glm::vec3(1.f, .0003f, 0.0001f));
+		Rosewood::TransformData pointLightTransform = Rosewood::TransformData(glm::vec3(10.f, 10.f, 0.f), glm::quat(), glm::vec3(1.f));
+		m_PrimaryScene->AddComponent<Rosewood::TransformComponent>(pointLightEntity, pointLightTransform);
 	}
 
 	void OnUpdate(float dt) override

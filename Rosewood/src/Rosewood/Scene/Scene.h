@@ -37,9 +37,6 @@ namespace Rosewood
 		template<typename T>
 		void RemoveComponent(EntityID entityID);
 
-	public:
-		Ref<Shader> m_Shader;
-
 	private:
 		entt::registry m_Registry;
 		EntityID m_PrimaryCameraEntityID = entt::null;

@@ -195,6 +195,7 @@
     <ClInclude Include="src\Rosewood\Scene\Components.h" />
     <ClInclude Include="src\Rosewood\Renderer\Batch\Batch.h" />
     <ClInclude Include="src\Rosewood\Scene\Scene.h" />
+    <ClInclude Include="src\Rosewood\Renderer\Material\Material.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Rosewood\Application.cpp">
@@ -280,5 +281,6 @@
     </ClCompile>
     <ClCompile Include="src\Rosewood\Scene\Scene.cpp" />
     <ClCompile Include="src\Rosewood\Renderer\Batch\Batch.cpp" />
+    <ClCompile Include="src\Rosewood\Renderer\Material\Material.cpp" />
   </ItemGroup>
 </Project>

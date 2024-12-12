@@ -4,6 +4,7 @@
 #include "Rosewood/Renderer/VertexArray/VertexArray.h"
 #include "Rosewood/Renderer/Camera/Camera.h"
 #include "Rosewood/Renderer/Lighting/Light.h"
+#include "Rosewood/Renderer/Material/Material.h"
 
 namespace Rosewood
 {
@@ -32,13 +33,24 @@ namespace Rosewood
 
 	struct CameraComponent
 	{
-		Ref<Camera> CameraData;
+		Ref<Camera> CameraRef;
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
 		CameraComponent(Ref<Camera> camera)
-			: CameraData(camera) {}
+			: CameraRef(camera) {}
 	};
+
+	struct MaterialComponent
+	{
+		Ref<Material> MaterialRef;
+
+		MaterialComponent() = default;
+		MaterialComponent(const MaterialComponent&) = default;
+		MaterialComponent(Ref<Material> material)
+			: MaterialRef(material) {}
+	};
+
 
 	struct MeshComponent
 	{
@@ -52,15 +64,58 @@ namespace Rosewood
 
 	struct PointLightComponent
 	{
-		PointLight& lightData;
+		PointLight LightData;
+
+		PointLightComponent() = default;
+		PointLightComponent(const PointLightComponent&) = default;
+		PointLightComponent(PointLight& lightData)
+			: LightData(lightData) {}
+		PointLightComponent(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, glm::vec3 attenuation)
+		{
+			LightData = PointLight(
+				glm::vec4(0.f, 0.f, 0.f, 0.f),
+				glm::vec4(ambient, 0.f),
+				glm::vec4(diffuse, 0.f),
+				glm::vec4(specular, 0.f),
+				glm::vec4(attenuation, 0.f));
+		}
 	};
-	struct SpottLightComponent
+	struct SpotLightComponent
 	{
-		SpotLight& lightData;
+		SpotLight LightData;
+
+		SpotLightComponent() = default;
+		SpotLightComponent(const SpotLightComponent&) = default;
+		SpotLightComponent(SpotLight& lightData)
+			: LightData(lightData) {}
+		SpotLightComponent(float nearCutOff, float farCutOff, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, glm::vec3 attenuation)
+		{
+			LightData = SpotLight(
+				glm::vec4(0.f, 0.f, 0.f, 0.f),
+				glm::vec4(0.f, -1.f, 0.f, 0.f),
+				glm::vec4(nearCutOff, farCutOff, 0.f, 0.f),
+				glm::vec4(ambient, 0.f),
+				glm::vec4(diffuse, 0.f),
+				glm::vec4(specular, 0.f),
+				glm::vec4(attenuation, 0.f));
+		}
 	};
 	struct DirectionalLightComponent
 	{
-		DirectionalLight& lightData;
+		DirectionalLight LightData;
+
+		DirectionalLightComponent() = default;
+		DirectionalLightComponent(const DirectionalLightComponent&) = default;
+		DirectionalLightComponent(DirectionalLight& lightData)
+			: LightData(lightData) {}
+		DirectionalLightComponent(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular)
+		{
+			LightData = DirectionalLight(
+				glm::vec4(0.f, 0.f, 0.f, 0.f),
+				glm::vec4(ambient, 0.f),
+				glm::vec4(diffuse, 0.f),
+				glm::vec4(specular, 0.f));
+		}
 	};
 
 }

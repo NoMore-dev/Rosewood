@@ -11,7 +11,7 @@ namespace Rosewood
 	{
 	public:
 		TransformData() = default;
-		TransformData(glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale);
+		TransformData(glm::vec3 translation, glm::quat rotation, glm::vec3 scale);
 		TransformData(glm::mat4 transformMatrix);
 		~TransformData() = default;
 

@@ -26,6 +26,7 @@
 #include "Rosewood/Renderer/Texture/Texture.h"
 #include "Rosewood/Renderer/Mesh/Mesh.h"
 #include "Rosewood/Renderer/Batch/Batch.h"
+#include "Rosewood/Renderer/Material/Material.h"
 
 #include "Rosewood/Renderer/Camera/Camera.h"
 #include "Rosewood/Renderer/Camera/PerspectiveCamera.h"
