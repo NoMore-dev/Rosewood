@@ -15,6 +15,8 @@ namespace Rosewood {
 		glFrontFace(GL_CCW);
 
 		glEnable(GL_DEPTH_TEST);
+
+		glEnable(GL_MULTISAMPLE);
 	}
 
 	void OpenGLRendererAPI::SetClearColor(const glm::vec4& color)
@@ -25,6 +27,24 @@ namespace Rosewood {
 	void OpenGLRendererAPI::Clear()
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+
+	void OpenGLRendererAPI::SetCullMode(CullMode cullMode)
+	{
+		switch (cullMode)
+		{
+		case Rosewood::CullBack:
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_BACK);
+			return;
+		case Rosewood::CullFront:
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_FRONT);
+			return;
+		case Rosewood::CullDisabled:
+			glDisable(GL_CULL_FACE);
+			return;
+		}
 	}
 
 	void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray)
@@ -75,4 +95,8 @@ namespace Rosewood {
 		glViewport(0, 0, width, height);
 	}
 
+	void OpenGLRendererAPI::Finish()
+	{
+		glFinish();
+	}
 }

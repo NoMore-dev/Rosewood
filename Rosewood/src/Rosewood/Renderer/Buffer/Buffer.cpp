@@ -8,12 +8,12 @@ namespace Rosewood
 
 	// VertexBuffer //////////////////////////////////////////////////////////////
 
-	Ref<VertexBuffer> VertexBuffer::Create(BYTE* vertices, uint32_t size)
+	Ref<VertexBuffer> VertexBuffer::Create(BYTE* vertices, uint32_t size, BufferLayout& layout)
 	{
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None: RW_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLVertexBuffer>(vertices, size);
+		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLVertexBuffer>(vertices, size, layout);
 		}
 
 		RW_CORE_ASSERT(false, "Unkown RendererAPI!");
@@ -52,12 +52,12 @@ namespace Rosewood
 
 	// UniformBuffer //////////////////////////////////////////////////////////////
 
-	Ref<UniformBuffer> UniformBuffer::Create(uint32_t size, uint32_t binding)
+	Ref<UniformBuffer> UniformBuffer::Create(uint32_t size)
 	{
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None: RW_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLUniformBuffer>(size, binding);
+		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLUniformBuffer>(size);
 		}
 
 		RW_CORE_ASSERT(false, "Unkown RendererAPI!");

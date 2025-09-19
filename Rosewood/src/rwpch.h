@@ -6,7 +6,7 @@
 #include <utility>
 #include <algorithm>
 #include <functional>
-
+#include <optional>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -18,4 +18,4 @@
 
 #ifdef HZ_PLATFORM_WINDOWS
 	#include <Windows.h>
-#endif#pragma once
+#endif

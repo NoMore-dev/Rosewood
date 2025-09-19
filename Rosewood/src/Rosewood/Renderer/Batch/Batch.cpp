@@ -3,7 +3,7 @@
 
 namespace Rosewood
 {
-	Batch::Batch(const std::vector<MeshData>& meshes, const std::vector<glm::mat4>& transforms, BufferLayout layout)
+	/*Batch::Batch(const std::vector<MeshData>& meshes, const std::vector<glm::mat4>& transforms, BufferLayout layout)
 	{
 		m_VertexArray = VertexArray::Create();
 		m_VertexCounts = std::vector<uint32_t>(meshes.size());
@@ -64,5 +64,5 @@ namespace Rosewood
 			firstIndex += GetIndexCount(i);
 			baseVertex += GetVertexCount(i);
 		}
-	}
+	}*/
 }

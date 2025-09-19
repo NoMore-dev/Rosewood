@@ -20,9 +20,7 @@ namespace Rosewood {
 		static void DrawScene();
 		static void EndScene();
 
-		static void Submit(const Ref<Material>& material, const Ref<VertexArray>& vertexArray, const glm::mat4* transform);
-/*		static void SubmitInstances(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, int count);
-		static void SubmitBatch(const Ref<Shader>& shader, const Ref<Batch>& batch)*/;
+		static void Submit(const Ref<Material> material, const Ref<VertexArray> vertexArray, const glm::mat4* transform);
 
 		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 
@@ -36,12 +34,13 @@ namespace Rosewood {
 		struct SceneData {
 			Ref<UniformBuffer> CameraUniformBuffer;
 			Ref<UniformBuffer> LightsUniformBuffer;
+			Ref<UniformBuffer> InstanceUniformBuffer;
 
 			uint32_t DrawDataCount = 0;
 			std::array<DrawData, 10000> DrawDataContainer;
 		};
 
-		static SceneData* s_SceneData;
+		static SceneData s_SceneData;
 
 	public:
 		static const int MAX_POINT_LIGHTS = 64;

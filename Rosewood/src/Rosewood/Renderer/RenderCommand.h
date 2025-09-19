@@ -22,6 +22,11 @@ namespace Rosewood {
 			s_RendererAPI->Clear();
 		}
 
+		inline static void SetCullMode(CullMode cullMode)
+		{
+			s_RendererAPI->SetCullMode(cullMode);
+		}
+
 		inline static void DrawIndexed(const Ref<VertexArray>& vertexArray)
 		{
 			s_RendererAPI->DrawIndexed(vertexArray);
@@ -41,6 +46,12 @@ namespace Rosewood {
 		{
 			s_RendererAPI->SetViewportSize(width, height);
 		}
+
+		inline static void Finish()
+		{
+			s_RendererAPI->Finish();
+		}
+
 	private:
 		static RendererAPI* s_RendererAPI;
 	};

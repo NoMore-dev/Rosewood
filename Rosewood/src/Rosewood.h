@@ -16,12 +16,18 @@
 #include "Rosewood/Scene/Components.h"
 #include "Rosewood/Scene/Transform/Transform.h"
 
+#include "Rosewood/Utils/FileExplorer.h"
+
 //--Renderer-----------------------------
 #include "Rosewood/Renderer/Renderer.h"
 #include "Rosewood/Renderer/RenderCommand.h"
 
+#include "Rosewood/Renderer/Framebuffer/Framebuffer.h"
+
 #include "Rosewood/Renderer/Shader/Shader.h"
+#include "Rosewood/Renderer/Shader/ShaderDataType.h"
 #include "Rosewood/Renderer/VertexArray/VertexArray.h"
+#include "Rosewood/Renderer/Buffer/Layout/BufferLayout.h"
 #include "Rosewood/Renderer/Buffer/Buffer.h"
 #include "Rosewood/Renderer/Texture/Texture.h"
 #include "Rosewood/Renderer/Mesh/Mesh.h"
@@ -33,8 +39,4 @@
 #include "Rosewood/Renderer/Camera/OrthographicCamera.h"
 
 #include "Rosewood/Renderer/Lighting/Light.h"
-//---------------------------------------
-
-//--Entry Point--------------------------
-#include "Rosewood/Entrypoint.h"
 //---------------------------------------

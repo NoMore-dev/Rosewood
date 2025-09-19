@@ -16,6 +16,7 @@ namespace Rosewood
 	TransformData::TransformData(glm::mat4 transformMatrix):
 		m_TransformMatrix(transformMatrix)
 	{
+		DecomposeMatrix();
 	}
 
 	glm::vec3 TransformData::GetForward() const
@@ -54,7 +55,17 @@ namespace Rosewood
 
 	void TransformData::DecomposeMatrix()
 	{
+		m_Translation = m_TransformMatrix[3];
+		for (int i = 0; i < 3; i++)
+			m_Scale[i] = glm::length(glm::vec3(m_TransformMatrix[i]));
+		const glm::mat3 rotationMatrix(
+			glm::vec3(m_TransformMatrix[0]) / m_Scale[0],
+			glm::vec3(m_TransformMatrix[1]) / m_Scale[1],
+			glm::vec3(m_TransformMatrix[2]) / m_Scale[2]);
+		m_Rotation = glm::quat_cast(rotationMatrix);
+		m_RotationEuler = glm::eulerAngles(m_Rotation);
 
+		m_DirtyFlag = false;
 	}
 
 }

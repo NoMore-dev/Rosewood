@@ -2,9 +2,9 @@
 .vs/
 bin/
 bin-int/
-Sandbox/assets/
 
 # Files
+*.sln
 *.user
-Sandbox/imgui.ini
-TODO.txt
+*.vcxproj
+*.vcxproj.filters

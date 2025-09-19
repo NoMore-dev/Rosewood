@@ -18,7 +18,7 @@ namespace Rosewood
 		return nullptr;
 	}
 
-	Ref<Shader> Shader::Create(const ShaderComponentPaths componentPaths, const std::string& name)
+	Ref<Shader> Shader::Create(const ShaderComponentPaths& componentPaths, const std::string& name)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -30,9 +30,9 @@ namespace Rosewood
 		return nullptr;
 	}
 
-	void Shader::Unbind() const
-	{
-	}
+
+
+	std::unordered_map<std::string, Ref<Shader>> ShaderLibrary::s_Shaders = std::unordered_map<std::string, Ref<Shader>>();
 
 	Ref<Shader> ShaderLibrary::Load(const std::string& filepath, const std::string& name)
 	{
@@ -56,11 +56,11 @@ namespace Rosewood
 		return nullptr;
 	}
 
-	Ref<Shader> ShaderLibrary::Get(const std::string& name) const
+	Ref<Shader> ShaderLibrary::Get(const std::string& name)
 	{
 		try
 		{
-			return m_Shaders.at(name);
+			return s_Shaders.at(name);
 		}
 		catch(std::out_of_range)
 		{
@@ -71,13 +71,13 @@ namespace Rosewood
 
 	int ShaderLibrary::Add(const Ref<Shader> shader)
 	{	
-		if (m_Shaders.count(shader->GetName())) 
+		if (s_Shaders.count(shader->GetName())) 
 		{
 			RW_CORE_ERROR("ERROR::SHADERLIBRARY\n	The shader library already contains a shader for this name : '{0}' !", shader->GetName());
 			return 0;
 		}
 
-		m_Shaders.insert({ shader->GetName(), shader });
+		s_Shaders.insert({ shader->GetName(), shader });
 		return 1;
 	}
 }

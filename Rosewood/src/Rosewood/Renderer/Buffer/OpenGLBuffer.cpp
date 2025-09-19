@@ -7,7 +7,8 @@ namespace Rosewood
 {
 	// VertexBuffer //////////////////////////////////////////////////////////////
 
-	OpenGLVertexBuffer::OpenGLVertexBuffer(BYTE* vertices, uint32_t size)
+	OpenGLVertexBuffer::OpenGLVertexBuffer(BYTE* vertices, uint32_t size, BufferLayout& layout)
+		: m_Layout(layout)
 	{
 		glCreateBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
@@ -83,17 +84,23 @@ namespace Rosewood
 
 	// UniformBuffer //////////////////////////////////////////////////////////////
 
-	OpenGLUniformBuffer::OpenGLUniformBuffer(uint32_t size, uint32_t binding)
+	OpenGLUniformBuffer::OpenGLUniformBuffer(uint32_t size)
 	{
 		glCreateBuffers(1, &m_BufferID);
+
 		glBindBuffer(GL_UNIFORM_BUFFER, m_BufferID);
 		glBufferData(GL_UNIFORM_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
-		glBindBufferBase(GL_UNIFORM_BUFFER, binding, m_BufferID);
+		
 	}
 
 	OpenGLUniformBuffer::~OpenGLUniformBuffer()
 	{
 		glDeleteBuffers(1, &m_BufferID);
+	}
+
+	void OpenGLUniformBuffer::BindToBindingPoint(uint32_t bindingPoint)
+	{
+		glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, m_BufferID);
 	}
 
 	void OpenGLUniformBuffer::SetData(const void* data, uint32_t size, uint32_t offset)

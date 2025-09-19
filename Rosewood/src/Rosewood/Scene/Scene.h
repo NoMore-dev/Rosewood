@@ -3,6 +3,10 @@
 #include "Rosewood/Renderer/VertexArray/VertexArray.h"
 #include "Rosewood/Renderer/Shader/Shader.h"
 #include "Rosewood/Renderer/Camera/PerspectiveCamera.h"
+#include "Rosewood/Renderer/Framebuffer/Framebuffer.h"
+#include "Entity.h"
+
+#include "Rosewood/Renderer/Texture/Texture.h"
 
 #include "entt/entt.hpp"
 
@@ -11,12 +15,10 @@
 
 namespace Rosewood
 {
-	using EntityID = entt::entity;
-
 	class Scene
 	{
 	public:
-		Scene::Scene() = default;
+		Scene::Scene();
 		Scene::~Scene() = default;
 
 		void Scene::OnUpdate(float dt);
@@ -28,8 +30,11 @@ namespace Rosewood
 
 		EntityID CreateEntity();
 		void DestroyEntity(EntityID entityID);
+
 		template<typename T>
 		bool HasComponent(EntityID entityID) const;
+		template<typename T>
+		void AddTag(EntityID entityID);
 		template<typename T, typename... Args>
 		T& AddComponent(EntityID entityID, Args&&... args);
 		template<typename T>
@@ -37,15 +42,28 @@ namespace Rosewood
 		template<typename T>
 		void RemoveComponent(EntityID entityID);
 
+		template<typename... Components>
+		auto GetAllEntitiesWith();
+
+
 	private:
 		entt::registry m_Registry;
 		EntityID m_PrimaryCameraEntityID = entt::null;
 	};
 
+
+
+
 	template<typename T>
 	inline bool Scene::HasComponent(EntityID entityID) const
 	{
 		return m_Registry.any_of<T>(entityID);
+	}
+
+	template<typename T>
+	inline void Scene::AddTag(EntityID entityID)
+	{
+		m_Registry.emplace<T>(entityID);
 	}
 
 	template<typename T, typename... Args>
@@ -64,4 +82,11 @@ namespace Rosewood
 	{
 		m_Registry.remove<T>(entityID);
 	}
+
+	template<typename... Components>
+	inline auto Scene::GetAllEntitiesWith()
+	{
+		return m_Registry.view<Components...>();
+	}
+
 }

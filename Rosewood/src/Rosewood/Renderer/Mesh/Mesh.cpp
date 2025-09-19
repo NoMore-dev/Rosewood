@@ -5,201 +5,291 @@
 
 namespace Rosewood
 {
-    MeshData::MeshData()
-    {
-    }
+    Mesh::Mesh(const MeshData& data):
+        m_MeshData(data)
+    {}
 
-    MeshData::MeshData(const std::string& filepath, FileFormat fileFormat)
-    {
-        LoadFromFile(filepath, fileFormat);
-    }
+    Mesh::Mesh(MeshData&& data):
+        m_MeshData(data)
+    {}
 
-    void MeshData::LoadFromFile(const std::string& filepath,FileFormat fileFormat)
-	{
-        switch (fileFormat)
+    std::vector<Ref<VertexArray>> Mesh::MakeVertexArrays()
+    {
+        struct Vertex
         {
-        case Rosewood::MeshData::OBJ:
-            MeshData::LoadFromOBJFile(filepath);
-            break;
-        case Rosewood::MeshData::CUSTOM:
-            MeshData::LoadFromCustomFile(filepath);
-            break;
+            glm::vec3 Position = glm::vec3{};
+            glm::vec3 Normal = glm::vec3{};
+            glm::vec2 TexCoords = glm::vec2{};
+            uint32_t Color = 0;
+        };
+
+        Rosewood::BufferLayout layout = {
+            { Rosewood::ShaderDataType::Float3,				"a_Position"		},
+            { Rosewood::ShaderDataType::Float3,				"a_Normal"			},
+            { Rosewood::ShaderDataType::Float2,			    "a_UV"				},
+            { Rosewood::ShaderDataType::Packed_2ZYX_UInt,	"a_Color",		true},
+        };
+
+        std::vector<Ref<VertexArray>> VAOs;
+
+        for (MeshData::SurfaceData& surface : m_MeshData.Surfaces)
+        {
+            std::vector<Vertex> interleavedVerticesData(surface.Positions.size());
+
+            uint32_t i = 0;
+            for (Vertex& vertex : interleavedVerticesData)
+            {
+                vertex.Position = surface.Positions[i];
+
+                vertex.Normal = surface.Normals[i];
+
+                //vertex.TexCoords[0] = (uint16_t)std::round(65535.f * surface.TexCoords[i].x);
+                //vertex.TexCoords[1] = (uint16_t)std::round(65535.f * surface.TexCoords[i].y);
+                vertex.TexCoords[0] = surface.TexCoords[i].x;
+                vertex.TexCoords[1] = surface.TexCoords[i].y;
+
+                uint32_t r = (uint32_t)std::round(1023.f * .0f);
+                uint32_t g = (uint32_t)std::round(1023.f * .0f);
+                uint32_t b = (uint32_t)std::round(1023.f * .0f);
+                uint32_t a = (uint32_t)(3.f * 1.f);
+                vertex.Color = (a << 30) | (b << 20) | (g << 10) | (r << 0);
+
+                i++;
+            }
+
+
+            Ref<VertexArray> VAO = Rosewood::VertexArray::Create();
+            VAO->Bind();
+
+            Rosewood::Ref<Rosewood::VertexBuffer>   vb  = Rosewood::VertexBuffer::Create((BYTE*)interleavedVerticesData.data(), interleavedVerticesData.size() * sizeof(Vertex), layout);
+            Ref<Rosewood::IndexBuffer>              ib  = IndexBuffer::Create(surface.Indices.data(), surface.Indices.size());
+
+            VAO->AddVertexBuffer(vb);
+            VAO->SetIndexBuffer(ib);
+
+            VAOs.push_back(VAO);
         }
 
-	}
+        return VAOs;
+    }
 
-    void MeshData::LoadFromOBJFile(const std::string& filepath)
+    std::vector<MeshData::SurfaceData>& Mesh::GetSurfaces()
     {
+        return m_MeshData.Surfaces;
+    }
+
+    ModelImport::ImportedModel ModelImport::Import(const std::string& filepath, FileFormat fileFormat)
+    {
+        switch (fileFormat)
+        {
+        case Rosewood::ModelImport::FileFormat::OBJ:
+            ModelImport::ImportedModel model = ModelImport::ImportedModel{};
+            ModelImport::ImportFromOBJ(filepath, model);
+            return model;
+        }
+    }
+
+    void ModelImport::ImportFromOBJ(const std::string& filepath, ModelImport::ImportedModel& out_Model)
+    {
+        struct TempSurfaceData
+        {
+            std::vector<glm::ivec3> Indices;
+            std::vector<uint32_t> PositionsIndices;
+            std::vector<uint32_t> NormalsIndices;
+            std::vector<uint32_t> TexCoordsIndices;
+            std::string MaterialSlotName = "";
+        };
+
+        struct TempMeshObjectData
+        {
+            std::vector<TempSurfaceData> Surfaces;
+
+            std::vector<glm::vec3> Positions;
+            std::vector<glm::vec3> Normals;
+            std::vector<glm::vec2> TexCoords;
+            std::vector<glm::vec3> Colors;
+
+            std::string ObjectName = "";
+        };
+
+        std::vector<TempMeshObjectData> tempMeshObjects;
+        bool inSurface = false;
+
         std::ifstream fileStream;
         fileStream.open(filepath);
 
         RW_CORE_ASSERT(fileStream.is_open(), "Unable to open file : '" + filepath + "'");
 
-        std::vector<glm::vec3> positions;
-        std::vector<glm::vec3> normals;
-        std::vector<glm::vec2> texCoords;
-        std::vector<glm::ivec3> triangles;
+        std::string line;
+        while (std::getline(fileStream, line)) {
+            std::string lineHead;
+            std::istringstream lineBodyStream(line);
+            lineBodyStream >> lineHead;
 
-        std::string tag;
+            if (lineHead == "o") {
+                tempMeshObjects.push_back(TempMeshObjectData());
+                lineBodyStream >> tempMeshObjects.back().ObjectName;
+            }
 
-        while (fileStream.good()) {
-
-            fileStream >> tag;
-
-            if (tag == "v") {
+            else if (lineHead == "v") {
                 std::string x, y, z;
-                fileStream >> x; fileStream >> y; fileStream >> z;
-                positions.push_back(glm::vec3(std::stof(x), std::stof(y), std::stof(z)));
-            }
+                lineBodyStream >> x; lineBodyStream >> y; lineBodyStream >> z;
+                tempMeshObjects.back().Positions.push_back(glm::vec3(std::stof(x), std::stof(y), std::stof(z)));
 
-            else if (tag == "vn") {
-                std::string x, y, z;
-                fileStream >> x; fileStream >> y; fileStream >> z;
-                normals.push_back(glm::vec3(std::stof(x), std::stof(y), std::stof(z)));
-            }
-
-            else if (tag == "vt") {
-                std::string x, y;
-                fileStream >> x; fileStream >> y;
-                texCoords.push_back(glm::vec2(std::stof(x), std::stof(y)));
-            }
-
-            else if (tag == "f") {
-                std::string a, b, c;
-                fileStream >> a; fileStream >> b; fileStream >> c;
-
-                std::string delimiter = "/";
-                for (std::string str : {a, b, c}) {
-                    uint32_t x, y, z;
-
-                    size_t pos = 0;
-                    pos = str.find(delimiter);
-                    x = std::stoi(str.substr(0, pos));
-                    str.erase(0, pos + delimiter.length());
-                    pos = str.find(delimiter);
-                    y = std::stoi(str.substr(0, pos));
-                    str.erase(0, pos + delimiter.length());
-                    z = std::stoi(str);
-
-                    triangles.push_back(glm::ivec3(x, y, z));
+                if (!(lineBodyStream.peek() == EOF))
+                {
+                    lineBodyStream >> x; lineBodyStream >> y; lineBodyStream >> z;
+                    tempMeshObjects.back().Colors.push_back(glm::vec3(std::stof(x), std::stof(y), std::stof(z)));
                 }
             }
 
-            tag = "";
-        }
-
-        fileStream.close();
-        
-        uint32_t indexCount = (uint32_t)triangles.size();
-        m_Indices = std::vector<uint32_t>(indexCount);
-
-        std::unordered_map<std::string, uint32_t> map{};
-
-        for (uint32_t i = 0; i < indexCount; i++) {
-
-            std::string key = std::to_string(triangles[i].x) + "/" + std::to_string(triangles[i].y) + "/" + std::to_string(triangles[i].z);
-
-            if (map.count(key))
-            {
-                m_Indices[i] = map.at(key); continue;
+            else if (lineHead == "vn") {
+                std::string x, y, z;
+                lineBodyStream >> x; lineBodyStream >> y; lineBodyStream >> z;
+                tempMeshObjects.back().Normals.push_back(glm::vec3(std::stof(x), std::stof(y), std::stof(z)));
             }
 
-            m_Indices[i] = (uint32_t)m_Vertices.size();
-            map.insert({ key, (uint32_t)m_Vertices.size() });
-            
-            Vertex vert;
+            else if (lineHead == "vt") {
+                std::string x, y;
+                lineBodyStream >> x; lineBodyStream >> y;
+                tempMeshObjects.back().TexCoords.push_back(glm::vec2(std::stof(x), std::stof(y)));
+            }
 
-            vert.Position = positions[triangles[i].x - 1];
+            else if (lineHead == "usemtl")
+            {
+                tempMeshObjects.back().Surfaces.push_back(TempSurfaceData());
+                lineBodyStream >> tempMeshObjects.back().Surfaces.back().MaterialSlotName;
+                if (!inSurface)
+                    inSurface = true;
+            }
 
-            uint16_t u = (uint16_t)std::round(65535.f * texCoords[triangles[i].y - 1].x);
-            uint16_t v = (uint16_t)std::round(65535.f * texCoords[triangles[i].y - 1].y);
-            vert.TexCoords[0] = u; vert.TexCoords[1] = v;
-            //vert.TexCoords = texCoords[triangles[i].y - 1];
+            else if (lineHead == "f") {
+                if (!inSurface)
+                {
+                    tempMeshObjects.back().Surfaces.push_back(TempSurfaceData());
+                    inSurface = true;
+                }
 
-            //glm::vec3 normal = glm::normalize(normals[triangles[i].z - 1]);
-            //int32_t nx = normal.x > 0 ? (int32_t)std::round(511.f * normal.x) : (int32_t)std::round(512.f * normal.x);
-            //int32_t ny = normal.y > 0 ? (int32_t)std::round(511.f * normal.y) : (int32_t)std::round(512.f * normal.y);
-            //int32_t nz = normal.z > 0 ? (int32_t)std::round(511.f * normal.z) : (int32_t)std::round(512.f * normal.z);
-            //vert.Normal = (nz << 20) | (ny << 10) | (nx << 0);
-            vert.Normal = normals[triangles[i].z - 1];
+                // only works correctly on trianglulated meshes
+                std::string a, b, c;
+                lineBodyStream >> a; lineBodyStream >> b; lineBodyStream >> c;
 
-            uint32_t r = (uint32_t)std::round(1023.f * .0f);
-            uint32_t g = (uint32_t)std::round(1023.f * .0f);
-            uint32_t b = (uint32_t)std::round(1023.f * .0f);
-            uint32_t a = (uint32_t)(3.f * 1.f);
-            vert.Color = (a << 30) | (b << 20) | (g << 10) | (r << 0);
+                std::string delimiter = "/";
+                for (std::string str : {a, b, c}) {
+                    uint32_t x = 0, y = 0, z = 0;
 
-            m_Vertices.push_back(vert);
+                    size_t pos = 0;
+                    pos = str.find(delimiter);
+                    x = std::stoi(str.substr(0, pos)) - 1;
+                  
+                    str.erase(0, pos + delimiter.length());
+                    
+                    pos = str.find(delimiter);
+                    if (pos>0)
+                        y = std::stoi(str.substr(0, pos)) - 1;
+                    str.erase(0, pos + delimiter.length());
+
+                    if (!str.empty())
+                        z = std::stoi(str) - 1;
+
+                    tempMeshObjects.back().Surfaces.back().Indices.push_back(glm::ivec3(x, y, z));
+                }       
+            }
         }
-    }
-
-    void MeshData::LoadFromCustomFile(const std::string& filepath)
-    {
-        char* buffer;
-
-        std::basic_ifstream<char> fileStream(filepath, std::ios::binary);
-        RW_CORE_ASSERT(fileStream.is_open(), "Unable to open file : '" + filepath + "'");
-
-        fileStream.seekg(0, std::ios::end);
-        size_t length = fileStream.tellg();
-        fileStream.seekg(0, std::ios::beg);
-
-        buffer = new char[length];
-        fileStream.read(buffer, length);
 
         fileStream.close();
 
-        uint32_t vertexCount = *(uint32_t*)buffer;
-        uint32_t indexCount = *(uint32_t*)(buffer+sizeof(uint32_t));
+        uint32_t positionIndexOffset = 0;
+        uint32_t normalsIndexOffset = 0;
+        uint32_t texCoordsIndexOffset = 0;
 
-        Vertex* vertices_buffer = (Vertex*)(buffer + 2 * sizeof(uint32_t));
-        m_Vertices = std::vector<Vertex>(vertices_buffer, vertices_buffer + vertexCount);
+        for (TempMeshObjectData tempMeshObject : tempMeshObjects)
+        {
+            MeshData meshData = MeshData();
+            meshData.ObjectName = tempMeshObject.ObjectName;
 
-        uint32_t* indices_buffer = (uint32_t*)(buffer + 2 * sizeof(uint32_t) + sizeof(Vertex) * vertexCount);
-        m_Indices = std::vector<uint32_t>(indices_buffer, indices_buffer + indexCount);
+            for (TempSurfaceData tempSurface : tempMeshObject.Surfaces)
+            {
+                meshData.Surfaces.push_back(MeshData::SurfaceData());
+                meshData.SlotNames.push_back(tempSurface.MaterialSlotName);
 
-        delete[] buffer;
+                std::vector<glm::vec3>& positions = meshData.Surfaces.back().Positions;
+                std::vector<glm::vec3>& normals = meshData.Surfaces.back().Normals;
+                std::vector<glm::vec2>& texCoords = meshData.Surfaces.back().TexCoords;
+                std::vector<glm::vec3>& colors = meshData.Surfaces.back().Colors;
+
+                std::vector<uint32_t>& indices = meshData.Surfaces.back().Indices;
+
+                std::unordered_map<std::string, uint32_t> map{};
+                map.reserve(tempSurface.Indices.size());
+
+                uint32_t uniqueVertexCount = 0;
+                uint32_t indicesCount = 0;
+                for (glm::ivec3 indexTriplet : tempSurface.Indices)
+                {
+                    std::string key = std::to_string(indexTriplet.x) + "-" + std::to_string(indexTriplet.y) + "-" + std::to_string(indexTriplet.z);
+                    if (map.count(key))
+                    {
+                        indicesCount++;
+                        continue;
+                    }
+
+                    map.insert({ key, uniqueVertexCount });
+
+                    indicesCount++;
+                    uniqueVertexCount++;
+                }
+
+                positions.resize(uniqueVertexCount);
+                if (tempMeshObject.Normals.size() > 0)
+                    normals.resize(uniqueVertexCount);
+                if (tempMeshObject.TexCoords.size() > 0)
+                    texCoords.resize(uniqueVertexCount);
+                if (tempMeshObject.Colors.size() > 0)
+                    colors.resize(uniqueVertexCount);
+
+                indices = std::vector<uint32_t>(indicesCount);
+
+                map.clear();
+                map.reserve(tempSurface.Indices.size());
+
+                uniqueVertexCount = 0;
+                indicesCount = 0;
+                for (glm::ivec3 indexTriplet : tempSurface.Indices)
+                {
+                    std::string key = std::to_string(indexTriplet.x) + "-" + std::to_string(indexTriplet.y) + "-" + std::to_string(indexTriplet.z);
+                    if (map.count(key))
+                    {
+                        indices[indicesCount] = map.at(key);
+                        indicesCount++;
+                        continue;
+                    }
+
+                    uint32_t posIndex = indexTriplet.x - positionIndexOffset;
+                    uint32_t normIndex = indexTriplet.z - normalsIndexOffset;
+                    uint32_t texIndex = indexTriplet.y - texCoordsIndexOffset;
+
+                    positions[uniqueVertexCount] = tempMeshObject.Positions[posIndex];
+                    if (tempMeshObject.Normals.size() > 0)
+                        normals[uniqueVertexCount] = tempMeshObject.Normals[normIndex];
+                    if (tempMeshObject.TexCoords.size() > 0)
+                        texCoords[uniqueVertexCount] = tempMeshObject.TexCoords[texIndex];
+                    if (tempMeshObject.Colors.size() > 0)
+                        colors[uniqueVertexCount] = tempMeshObject.Colors[posIndex];
+
+                    indices[indicesCount] = uniqueVertexCount ;
+                    map.insert({ key, uniqueVertexCount});
+
+                    indicesCount++;
+                    uniqueVertexCount++;
+                }
+            }
+
+            positionIndexOffset += tempMeshObject.Positions.size();
+            normalsIndexOffset += tempMeshObject.Normals.size();
+            texCoordsIndexOffset += tempMeshObject.TexCoords.size();
+
+            out_Model.MeshObjects.push_back(Mesh(meshData));
+        }
     }
-
-    Ref<VertexArray> MeshData::MakeVertexArray()
-    {
-        Rosewood::BufferLayout layout = {
-        	{ Rosewood::ShaderDataType::Float3,				"a_Position"		},
-        	{ Rosewood::ShaderDataType::Float3,				"a_Normal"			},
-        	{ Rosewood::ShaderDataType::UShort2,			"a_UV"				},
-        	{ Rosewood::ShaderDataType::Packed_2ZYX_UInt,	"a_Color",		true},
-        };
-
-        Ref<VertexArray> VAO = Rosewood::VertexArray::Create();
-        VAO->Bind();
-
-		Rosewood::Ref<Rosewood::VertexBuffer> vb = Rosewood::VertexBuffer::Create((BYTE*)m_Vertices.data(), GetVertexCount() * sizeof(Rosewood::MeshData::Vertex));
-		vb->SetLayout(layout);
-		Rosewood::Ref<Rosewood::IndexBuffer> ib = Rosewood::IndexBuffer::Create(m_Indices.data(), GetIndexCount());
-
-        VAO->AddVertexBuffer(vb);
-        VAO->SetIndexBuffer(ib);
-
-        return VAO;
-    }
-
-    void MeshData::SaveDataToCustomFormat(const std::string& filepath) const
-    {
-        std::ofstream file;
-        file.open(filepath, std::ios_base::out | std::ios_base::binary);
-
-        uint32_t vertexCount = (uint32_t)m_Vertices.size();
-        uint32_t indexCount = (uint32_t)m_Indices.size();
-
-        file.write((const char*)&vertexCount, sizeof(uint32_t));
-        file.write((const char*)&indexCount, sizeof(uint32_t));
-
-        const float* v = &m_Vertices[0].Position.x;
-        file.write((const char*)v, vertexCount * sizeof(Vertex));
-        const uint32_t* i = &m_Indices[0];
-        file.write((const char*)i, indexCount * sizeof(uint32_t));
-
-        file.close();
-    }
-
 }

@@ -1,6 +1,6 @@
 workspace "Rosewood"
 	architecture "x64"
-	startproject "Sandbox"
+	startproject "ModelViewer"
 
 	configurations
 	{
@@ -19,6 +19,7 @@ IncludeDir["imgui"] = "Rosewood/vendor/imgui"
 IncludeDir["glm"] = "Rosewood/vendor/glm"
 IncludeDir["stb"] = "Rosewood/vendor/stb_image"
 IncludeDir["entt"] = "Rosewood/vendor/entt/include"
+IncludeDir["vulkanSDK"] = "Rosewood/vendor/vulkanSDK/1.4.309.0/Include"
 
 include "Rosewood/vendor/GLFW"
 include "Rosewood/vendor/glad"
@@ -29,7 +30,7 @@ project "Rosewood"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	staticruntime "off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -59,7 +60,8 @@ project "Rosewood"
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.vulkanSDK}"
 	}
 
 	links 
@@ -67,7 +69,10 @@ project "Rosewood"
 		"GLFW",
 		"glad",
 		"imgui",
-		"opengl32.lib"
+		"opengl32.lib",
+
+		"Rosewood/vendor/vulkanSDK/1.4.309.0/Lib/**",
+
 	}
 
 	filter "system:windows"
@@ -94,26 +99,27 @@ project "Rosewood"
 		defines "RW_DIST"
 		runtime "Release"
 		optimize "on"
+		
 
-
-project "Sandbox"
-	location "Sandbox"
+project "ModelViewer"
+	location "Examples/ModelViewer"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
-	staticruntime "on"
+	staticruntime "off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files
 	{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"Examples/%{prj.name}/src/**.h",
+		"Examples/%{prj.name}/src/**.cpp"
 	}
 
 	includedirs
 	{
+		"Examples/%{prj.name}/src",
 		"Rosewood/vendor/spdlog/include",
 		"Rosewood/src",
 		"%{IncludeDir.glm}",

@@ -10,7 +10,7 @@ namespace Rosewood
 	class OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
-		OpenGLVertexBuffer(BYTE* vertices, uint32_t size);
+		OpenGLVertexBuffer(BYTE* vertices, uint32_t size, BufferLayout& layout);
 		~OpenGLVertexBuffer();
 
 		void Bind() override;
@@ -30,7 +30,7 @@ namespace Rosewood
 	class OpenGLIndexBuffer : public IndexBuffer
 	{
 	public:
-		OpenGLIndexBuffer(uint32_t* indices, uint32_t size);
+		OpenGLIndexBuffer(uint32_t* indices, uint32_t count);
 		~OpenGLIndexBuffer();
 
 		void Bind() override;
@@ -63,8 +63,10 @@ namespace Rosewood
 	class OpenGLUniformBuffer : public UniformBuffer
 	{
 	public:
-		OpenGLUniformBuffer(uint32_t size, uint32_t binding);
+		OpenGLUniformBuffer(uint32_t size);
 		~OpenGLUniformBuffer();
+
+		void BindToBindingPoint(uint32_t bindingPoint) override;
 
 		void SetData(const void* data, uint32_t size, uint32_t offset = 0) override;
 

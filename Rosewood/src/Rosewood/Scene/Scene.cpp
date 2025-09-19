@@ -5,15 +5,15 @@
 
 namespace Rosewood
 {
+	Scene::Scene()
+	{}
+
 	void Scene::OnUpdate(float dt)
 	{
 	}
 
 	void Scene::Render()
 	{
-		Rosewood::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
-		Rosewood::RenderCommand::Clear();
-
 		if (HasPrimaryCamera())
 		{
 			Ref<Camera> cameraData = GetComponent<CameraComponent>(m_PrimaryCameraEntityID).CameraRef;
@@ -27,22 +27,23 @@ namespace Rosewood
 			{
 				pointLights.push_back(light.LightData);
 				TransformData transform = GetComponent<TransformComponent>(entityID).Transform;
-				pointLights.back().Position = glm::vec4(transform.GetTranslation(), 0.f);
+				pointLights.back().Position = glm::vec4(transform.GetTranslation(), 1.f);
 			}
-			// TODO : manage other light types
 
 			Rosewood::Renderer::BeginScene(*cameraData, cameraTransform, pointLights, spotLights, dirLights);
 
-			auto group2 = m_Registry.group<TransformComponent, MeshComponent, MaterialComponent>();
-			for (auto&& [entityID, transform, mesh, material] : group2.each())
+
+			auto group = m_Registry.group<TransformComponent, RenderableObject3D>();
+			for (auto&& [entityID, transform, renderableObject3D] : group.each())
 			{
-				Rosewood::Renderer::Submit(material.MaterialRef, mesh.VAO, &transform.Transform.GetMatrix());
+				for (int i = 0; i < renderableObject3D.Surfaces.size(); i++)
+					Rosewood::Renderer::Submit(renderableObject3D.Materials[i], renderableObject3D.Surfaces[i], &transform.Transform.GetMatrix());
 			}
+
 			Rosewood::Renderer::DrawScene();
 
 			Rosewood::Renderer::EndScene();
 		}
-
 	}
 
 	void Scene::SetPrimaryCameraID(EntityID newPrimaryCameraEntityID)

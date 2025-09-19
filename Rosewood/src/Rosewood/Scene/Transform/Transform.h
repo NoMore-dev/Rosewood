@@ -25,6 +25,7 @@ namespace Rosewood
 		glm::vec3 GetLeft() const;
 
 		const glm::mat4& GetMatrix() { if (m_DirtyFlag) RecalculateMatrix(); return m_TransformMatrix; }
+		void SetMatrix(const glm::mat4& matrix) { m_TransformMatrix = matrix; DecomposeMatrix(); }
 
 		void SetTranslation(const glm::vec3& translation) { m_Translation = translation; m_DirtyFlag = true; }
 		void SetRotation(const glm::quat& rotation) { m_Rotation = rotation; m_RotationEuler = glm::eulerAngles(m_Rotation); m_DirtyFlag = true; }

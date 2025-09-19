@@ -33,7 +33,7 @@ namespace Rosewood {
 		glBindVertexArray(m_RendererID);
 		vertexBuffer->Bind();
 
-		uint32_t index = m_VertexBuffers.size()*4;
+		uint32_t index = m_VertexBuffers.size()*4;// TODO
 		const auto& layout = vertexBuffer->GetLayout();
 		for (const auto& element : layout)
 		{
@@ -41,7 +41,7 @@ namespace Rosewood {
 			glVertexAttribPointer(
 				index,
 				element.ComponentCount,
-				OpenGLShader::ShaderDataTypeToOpenGLBaseType(element.Type),
+				ShaderDataTypeToOpenGLBaseType(element.Type),
 				element.Normalized ? GL_TRUE : GL_FALSE,
 				layout.GetStride(),
 				(const void*)element.Offset

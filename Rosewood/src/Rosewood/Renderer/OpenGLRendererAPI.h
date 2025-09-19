@@ -7,17 +7,21 @@ namespace Rosewood {
 	class OpenGLRendererAPI : public RendererAPI
 	{
 	public:
-		virtual void Init() override;
+		void Init() override;
 
-		virtual void SetClearColor(const glm::vec4& color) override;
-		virtual void Clear() override;
+		void SetClearColor(const glm::vec4& color) override;
+		void Clear() override;
 
-		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray) override;
-		virtual void DrawInstances(const Ref<VertexArray>& vertexArray, uint32_t count) override;
+		void SetCullMode(CullMode cullMode) override;
 
-		virtual void DrawBatch(const Ref<Batch>& batch) override;
+		void DrawIndexed(const Ref<VertexArray>& vertexArray) override;
+		void DrawInstances(const Ref<VertexArray>& vertexArray, uint32_t count) override;
 
-		virtual void SetViewportSize(int width, int height) override;
+		void DrawBatch(const Ref<Batch>& batch) override;
+
+		void SetViewportSize(int width, int height) override;
+
+		void Finish() override;
 	};
 
 

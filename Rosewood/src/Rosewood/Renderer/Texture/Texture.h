@@ -6,6 +6,16 @@
 
 namespace Rosewood 
 {
+	enum TextureFiltering	{ Nearest, Linear								};
+	enum TextureWrapping	{ ClampToEdge, ClampToBorder, Repeat, Mirror	};
+
+	struct TextureSpecification
+	{
+		TextureFiltering MagFiltering		= Nearest;
+		TextureFiltering MinFiltering		= Nearest;
+		TextureWrapping	 VerticalWrapping	= ClampToEdge;
+		TextureWrapping	 HorizontalWrapping = ClampToEdge;
+	};
 
 	class Texture
 	{
@@ -20,7 +30,7 @@ namespace Rosewood
 	class Texture2D : public Texture
 	{
 	public:
-		static Ref<Texture2D> Create(const std::string& path);
+		static Ref<Texture2D> Create(const std::string& path, const TextureSpecification& spec);
 
 	};
 }

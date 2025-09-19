@@ -5,10 +5,11 @@
 namespace Rosewood
 {
 
+
 	class OpenGLTexture2D : public Texture2D
 	{
 	public:
-		OpenGLTexture2D(const std::string& path);
+		OpenGLTexture2D(const std::string& path, const TextureSpecification& spec);
 		virtual ~OpenGLTexture2D();
 
 		uint32_t GetWidth() const override { return m_Width;  };
@@ -18,6 +19,8 @@ namespace Rosewood
 
 	private:
 		std::string m_Path;
+		TextureSpecification m_Spec;
+
 		uint32_t m_Width, m_Height;
 		uint32_t m_RendererID;
 		
