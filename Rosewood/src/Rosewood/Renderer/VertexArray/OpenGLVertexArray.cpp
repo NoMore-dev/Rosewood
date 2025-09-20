@@ -1,8 +1,10 @@
 #include "rwpch.h"
 #include "OpenGLVertexArray.h"
 #include "Rosewood/Renderer/Shader/OpenGLShader.h"
+#include "Rosewood/Utils/Conversions.h"
 
 #include <glad/glad.h>
+
 
 namespace Rosewood {
 
@@ -33,7 +35,7 @@ namespace Rosewood {
 		glBindVertexArray(m_RendererID);
 		vertexBuffer->Bind();
 
-		uint32_t index = m_VertexBuffers.size()*4;// TODO
+		uint32_t index = Utils::SizeToUint32(m_VertexBuffers.size())*4;// TODO
 		const auto& layout = vertexBuffer->GetLayout();
 		for (const auto& element : layout)
 		{
@@ -44,7 +46,7 @@ namespace Rosewood {
 				ShaderDataTypeToOpenGLBaseType(element.Type),
 				element.Normalized ? GL_TRUE : GL_FALSE,
 				layout.GetStride(),
-				(const void*)element.Offset
+				(const void*)UintToPtr(element.Offset)
 			);
 			index++;
 		}

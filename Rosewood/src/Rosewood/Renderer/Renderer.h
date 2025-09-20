@@ -28,7 +28,7 @@ namespace Rosewood {
 		struct DrawData {
 			Ref<VertexArray> vertexArray;
 			Ref<Material> material;
-			const glm::mat4* transform;
+			const glm::mat4* transform = nullptr;
 		};
 
 		struct SceneData {

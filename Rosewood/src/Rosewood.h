@@ -17,6 +17,7 @@
 #include "Rosewood/Scene/Transform/Transform.h"
 
 #include "Rosewood/Utils/FileExplorer.h"
+#include "Rosewood/Utils/Conversions.h"
 
 //--Renderer-----------------------------
 #include "Rosewood/Renderer/Renderer.h"

@@ -3,7 +3,7 @@
 #include "rwpch.h"
 #include "OpenGLShader.h"
 #include "Rosewood/Renderer/Shader/SPIRVShaderDataType.h"
-
+#include "Rosewood/Utils/Conversions.h"
 
 #include <shaderc/shaderc.hpp>
 #include <spirv_cross/spirv_cross.hpp>
@@ -112,13 +112,13 @@ namespace Rosewood
         for (const auto& resource : resources.uniform_buffers)
         {
             const auto& bufferType = compiler.get_type(resource.base_type_id);
-            uint32_t bufferSize = compiler.get_declared_struct_size(bufferType);
+            uint32_t bufferSize = Utils::SizeToUint32(compiler.get_declared_struct_size(bufferType));
             uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
-            int memberCount = bufferType.member_types.size();
+            uint32_t memberCount = Utils::SizeToUint32(bufferType.member_types.size());
 
             if (resource.name == "Material")
             {
-                for (int i = 0; i < memberCount; i++)
+                for (uint32_t i = 0; i < memberCount; i++)
                 {
                     materialBufferLayoutInitVector.push_back({ SPIRTypeToShaderDataType(compiler.get_type(compiler.get_type(resource.base_type_id).member_types[i])), compiler.get_member_name(resource.base_type_id, i) });
                 }

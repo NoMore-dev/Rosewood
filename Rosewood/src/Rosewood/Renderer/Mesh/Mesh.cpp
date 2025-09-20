@@ -1,5 +1,6 @@
 #include "rwpch.h"
 #include "Mesh.h"
+#include "Rosewood/Utils/Conversions.h"
 
 #include <unordered_map>
 
@@ -61,8 +62,8 @@ namespace Rosewood
             Ref<VertexArray> VAO = Rosewood::VertexArray::Create();
             VAO->Bind();
 
-            Rosewood::Ref<Rosewood::VertexBuffer>   vb  = Rosewood::VertexBuffer::Create((BYTE*)interleavedVerticesData.data(), interleavedVerticesData.size() * sizeof(Vertex), layout);
-            Ref<Rosewood::IndexBuffer>              ib  = IndexBuffer::Create(surface.Indices.data(), surface.Indices.size());
+            Rosewood::Ref<Rosewood::VertexBuffer>   vb  = Rosewood::VertexBuffer::Create((BYTE*)interleavedVerticesData.data(), Utils::SizeToUint32(interleavedVerticesData.size()) * sizeof(Vertex), layout);
+            Ref<Rosewood::IndexBuffer>              ib  = IndexBuffer::Create(surface.Indices.data(), Utils::SizeToUint32(surface.Indices.size()));
 
             VAO->AddVertexBuffer(vb);
             VAO->SetIndexBuffer(ib);
@@ -80,13 +81,16 @@ namespace Rosewood
 
     ModelImport::ImportedModel ModelImport::Import(const std::string& filepath, FileFormat fileFormat)
     {
+        ModelImport::ImportedModel model = ModelImport::ImportedModel{};
         switch (fileFormat)
         {
-        case Rosewood::ModelImport::FileFormat::OBJ:
-            ModelImport::ImportedModel model = ModelImport::ImportedModel{};
+        case Rosewood::ModelImport::FileFormat::OBJ :
             ModelImport::ImportFromOBJ(filepath, model);
             return model;
         }
+
+        RW_CORE_ASSERT(false, " Model file format not supported! ")
+        return model;
     }
 
     void ModelImport::ImportFromOBJ(const std::string& filepath, ModelImport::ImportedModel& out_Model)
@@ -285,9 +289,9 @@ namespace Rosewood
                 }
             }
 
-            positionIndexOffset += tempMeshObject.Positions.size();
-            normalsIndexOffset += tempMeshObject.Normals.size();
-            texCoordsIndexOffset += tempMeshObject.TexCoords.size();
+            positionIndexOffset += Utils::SizeToUint32(tempMeshObject.Positions.size());
+            normalsIndexOffset += Utils::SizeToUint32(tempMeshObject.Normals.size());
+            texCoordsIndexOffset += Utils::SizeToUint32(tempMeshObject.TexCoords.size());
 
             out_Model.MeshObjects.push_back(Mesh(meshData));
         }

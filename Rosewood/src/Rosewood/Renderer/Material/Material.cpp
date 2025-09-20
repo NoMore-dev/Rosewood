@@ -1,5 +1,6 @@
 #include "rwpch.h"
 #include "Material.h"
+#include "Rosewood/Utils/Conversions.h"
 
 namespace Rosewood
 {
@@ -33,7 +34,7 @@ namespace Rosewood
 	void Material::UploadMaterialData()
 	{
 		Ref<UniformBuffer> materialDataUniformBuffer = m_Shader->GetMaterialDataUniformBuffer();
-		materialDataUniformBuffer->SetData(m_MaterialData.data(), m_MaterialData.size(), 0);
+		materialDataUniformBuffer->SetData(m_MaterialData.data(), Utils::SizeToUint32(m_MaterialData.size()), 0);
 
 		for (auto& textureBinding : m_TextureBindings)
 		{
@@ -42,13 +43,16 @@ namespace Rosewood
 		}
 	}
 
-	const TextureBinding& Material::GetTextureBinding(uint32_t slot) const
+	const Ref<Texture2D> Material::GetBindedTexture(uint32_t slot) const
 	{
 		for (auto& textureBinding : m_TextureBindings)
 		{
 			if (textureBinding.BindingSlot.Slot == slot)
-				return textureBinding;
+				return textureBinding.Texture;
 		}
+
+		RW_CORE_ASSERT(false, " Invalid texture slot! ");
+		return nullptr;
 	}
 
 }

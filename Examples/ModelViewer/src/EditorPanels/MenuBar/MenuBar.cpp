@@ -49,9 +49,9 @@ void MenuBar::OnImGuiRender()
 							{
 								Rosewood::Ref<Rosewood::Material> material = std::make_shared<Rosewood::Material>(materialSpec);
 
-								glm::vec3 ambient = glm::vec3(1.);
-								glm::vec3 diffuse = glm::vec3(.8);
-								glm::vec3 specular = glm::vec3(.5);
+								glm::vec3 ambient = glm::vec3(1.f);
+								glm::vec3 diffuse = glm::vec3(.8f);
+								glm::vec3 specular = glm::vec3(.5f);
 								float shininess = 16.;
 
 								material->SetNamedParameter("Ambient", ambient);

@@ -1,5 +1,6 @@
 #include "rwpch.h"
 #include "Renderer.h"
+#include "Rosewood/Utils/Conversions.h"
 
 namespace Rosewood {
 
@@ -56,9 +57,9 @@ namespace Rosewood {
 
 		// Send lighting data to uniform buffer 
 		// TODO : Assert number of lights not greater than maximum
-		s_SceneData.LightsUniformBuffer->SetData(pointlights.data(), pointlights.size() * sizeof(PointLight), 16);
-		s_SceneData.LightsUniformBuffer->SetData(spotLights.data(), spotLights.size() * sizeof(SpotLight), 16 + sizeof(PointLight)*MAX_POINT_LIGHTS);
-		s_SceneData.LightsUniformBuffer->SetData(dirLights.data(), dirLights.size() * sizeof(DirectionalLight), 16 + sizeof(PointLight) * MAX_POINT_LIGHTS + sizeof(SpotLight) * MAX_SPOT_LIGHTS);
+		s_SceneData.LightsUniformBuffer->SetData(pointlights.data(), Utils::SizeToUint32(pointlights.size()) * sizeof(PointLight), 16);
+		s_SceneData.LightsUniformBuffer->SetData(spotLights.data(), Utils::SizeToUint32(spotLights.size()) * sizeof(SpotLight), 16 + sizeof(PointLight)*MAX_POINT_LIGHTS);
+		s_SceneData.LightsUniformBuffer->SetData(dirLights.data(), Utils::SizeToUint32(dirLights.size()) * sizeof(DirectionalLight), 16 + sizeof(PointLight) * MAX_POINT_LIGHTS + sizeof(SpotLight) * MAX_SPOT_LIGHTS);
 			
 		glm::vec4 lightsCount = glm::vec4(pointlights.size(), spotLights.size(), dirLights.size(), 0);
 		s_SceneData.LightsUniformBuffer->SetData(&lightsCount, 16, 0);

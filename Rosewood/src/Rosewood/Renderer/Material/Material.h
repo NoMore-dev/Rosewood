@@ -57,7 +57,7 @@ namespace Rosewood
         Ref<Shader> GetShader() { return m_Shader; }
         const MaterialSpecification& GetSpecification() const { return m_Spec; }
         std::vector<BYTE>& GetMaterialData() { return m_MaterialData; }
-        const TextureBinding& GetTextureBinding(uint32_t slot) const;
+        const Ref<Texture2D> GetBindedTexture(uint32_t slot) const;
 
     private:
         uint32_t m_ID;

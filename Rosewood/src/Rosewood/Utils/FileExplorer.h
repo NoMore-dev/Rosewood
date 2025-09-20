@@ -63,7 +63,10 @@ static bool OpenFileExplorer(std::string& out_FilePath, std::string& out_FileNam
 
 	//  FORMAT AND STORE THE FILE PATH
 	std::wstring path(f_Path);
-	std::string c(path.begin(), path.end());
+	std::string c(path.length(), 0);
+	std::transform(path.begin(), path.end(), c.begin(), [](wchar_t c) {
+		return (char)c;
+		});
 	out_FilePath = c;
 
 	//  FORMAT STRING FOR EXECUTABLE NAME AND FORMAT

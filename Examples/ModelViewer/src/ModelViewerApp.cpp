@@ -34,8 +34,8 @@ public:
 		std::array<uint32_t, 6>		indices		= { 0, 3, 1, 3, 2, 1 };
 		Rosewood::BufferLayout		layout		= { { Rosewood::ShaderDataType::Float3,				"a_Position"		} };
 
-		Rosewood::Ref<Rosewood::VertexBuffer>	vb = Rosewood::VertexBuffer::Create((BYTE*)vertices.data(), layout.GetStride() * vertices.size(), layout);
-		Rosewood::Ref<Rosewood::IndexBuffer>	ib = Rosewood::IndexBuffer::Create(indices.data(), indices.size());
+		Rosewood::Ref<Rosewood::VertexBuffer>	vb = Rosewood::VertexBuffer::Create((BYTE*)vertices.data(), layout.GetStride() * Rosewood::Utils::SizeToUint32(vertices.size()), layout);
+		Rosewood::Ref<Rosewood::IndexBuffer>	ib = Rosewood::IndexBuffer::Create(indices.data(), Rosewood::Utils::SizeToUint32(indices.size()));
 		Rosewood::Ref<Rosewood::VertexArray>	va = Rosewood::VertexArray::Create();
 		va->AddVertexBuffer(vb);
 		va->SetIndexBuffer(ib);
@@ -177,7 +177,7 @@ public:
 		const Rosewood::PerspectiveCamera* const camera = (Rosewood::PerspectiveCamera*)m_PrimaryScene->GetComponent<Rosewood::CameraComponent>(m_PrimaryScene->GetPrimaryCameraID()).CameraRef.get();
 		float aspectRatio = camera->GetSettings().ratio;
 
-		ImVec2 viewportSize = ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().x * 1./aspectRatio);
+		ImVec2 viewportSize = ImVec2(ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().x * 1.f/aspectRatio);
 		if (viewportSize.y > ImGui::GetContentRegionAvail().y)
 			viewportSize = ImVec2(ImGui::GetContentRegionAvail().y * aspectRatio, ImGui::GetContentRegionAvail().y);
 
@@ -191,10 +191,10 @@ public:
 		if (off > 0.0f)
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + off);
 
-		ImGui::Image((void*)textureID, viewportSize, ImVec2{ 0,1 }, ImVec2{ 1,0 });
+		ImGui::Image((void*)std::intptr_t(textureID), viewportSize, ImVec2{ 0,1 }, ImVec2{ 1,0 });
 
-		m_Framebuffer->Resize(viewportSize.x, viewportSize.y);
-		m_MultiSampledFramebuffer->Resize(viewportSize.x, viewportSize.y);
+		m_Framebuffer->Resize(uint32_t(viewportSize.x), uint32_t(viewportSize.y));
+		m_MultiSampledFramebuffer->Resize(uint32_t(viewportSize.x), uint32_t(viewportSize.y));
 
 		ImGui::End();
 

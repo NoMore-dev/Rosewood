@@ -72,7 +72,6 @@ project "Rosewood"
 		"opengl32.lib",
 
 		"Rosewood/vendor/vulkanSDK/1.4.309.0/Lib/**",
-
 	}
 
 	filter "system:windows"

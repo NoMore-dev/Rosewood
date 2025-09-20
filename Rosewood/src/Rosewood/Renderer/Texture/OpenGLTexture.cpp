@@ -15,10 +15,9 @@ namespace Rosewood
 		case Rosewood::Linear:
 			return GL_LINEAR;
 		default:
-			break;
+			RW_CORE_WARN("Texture filtering mode not supported ! Returned default GL_NEAREST !");
+			return GL_NEAREST;
 		}
-
-		RW_ASSERT(false, "Texture filtering mode not supported !");
 	}
 
 	static GLenum TextureFilteringGlenum(TextureWrapping wrappingMode)
@@ -34,10 +33,9 @@ namespace Rosewood
 		case Rosewood::Mirror:
 			return GL_MIRRORED_REPEAT;
 		default:
-			break;
+			RW_CORE_WARN("Texture wrapping mode not supported ! Returned default GL_CLAMP_TO_EDGE ! ");
+			return GL_CLAMP_TO_EDGE;
 		}
-
-		RW_ASSERT(false, "Texture wrapping mode not supported !");
 	}
 
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& path, const TextureSpecification& spec)

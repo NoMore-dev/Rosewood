@@ -25,12 +25,12 @@ namespace Rosewood
 			: ColorFormats(colorFormats), DepthFormat(depthFormat){}
 
 		std::vector<AttachmentFormat> ColorFormats;
-		AttachmentFormat DepthFormat;
+		AttachmentFormat DepthFormat = NO_ATTACHEMENT;
 	};
 
 	struct FramebufferSpecification
 	{
-		uint32_t Width, Height;
+		uint32_t Width = 0, Height = 0;
 		uint32_t Samples = 1;
 		FramebufferAttachmentsFormats AttachmentsFormats;
 	};
