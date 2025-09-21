@@ -15,9 +15,9 @@ public:
 	MainLayer()
 		: Layer("Main")
 	{
-		Rosewood::ShaderLibrary::Load(Rosewood::ShaderComponentPaths{ "../../shaders/simple.vert", "../../shaders/flat.frag" }, "simple/flat");
-		Rosewood::ShaderLibrary::Load(Rosewood::ShaderComponentPaths{ "../../shaders/simple.vert", "../../shaders/textured.frag" }, "simple/textured");
-		Rosewood::ShaderLibrary::Load(Rosewood::ShaderComponentPaths{ "../../shaders/Grid/grid.vert", "../../shaders/Grid/grid.frag" }, "grid");
+		Rosewood::ShaderLibrary::Load(Rosewood::ShaderSpecification{ "simple/flat",		"../../shaders/simple.vert",	"../../shaders/flat.frag"		});
+		Rosewood::ShaderLibrary::Load(Rosewood::ShaderSpecification{ "simple/textured", "../../shaders/simple.vert",	"../../shaders/textured.frag"	});
+		Rosewood::ShaderLibrary::Load(Rosewood::ShaderSpecification{ "grid",			"../../shaders/Grid/grid.vert", "../../shaders/Grid/grid.frag"	});
 
 
 		m_PrimaryScene = std::make_shared<Rosewood::Scene>();

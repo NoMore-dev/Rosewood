@@ -10,9 +10,7 @@ namespace Rosewood
     class OpenGLShader : public Shader
     {
     public:
-        OpenGLShader(const std::string& filepath, const std::string& name);
-
-        OpenGLShader(const ShaderComponentPaths& componentPaths, const std::string& name);
+        OpenGLShader(const ShaderSpecification& shaderSpec);
 
         ~OpenGLShader();
 
@@ -27,12 +25,11 @@ namespace Rosewood
         void InitializeMaterialDataUniformBuffer();
 
         std::string ReadFile(const std::string& filepath);
-        void SplitSource(const std::string& source, std::string& out_VertexSource, std::string& out_FragmentSource);
 
-        void MakeVulkanSpirvFromVulkanSources(const std::string& vertexVulkanSource, const std::string& fragmentVulkanSource, std::vector<uint32_t>& out_vertexVulkanSpirv, std::vector<uint32_t>& out_fragmentVulkanSpirv);
-        void MakeOpenGLSourcesFromVulkanSpirv(const std::vector<uint32_t>& vertexVulkanSpirv, const std::vector<uint32_t>& fragmentVulkanSpirv, std::string& out_vertexOpenGLSource, std::string& out_fragmentOpenGLSource);
+        void MakeVulkanSpirvFromVulkanSource(ShaderStage stage, const std::string& vulkanSource, std::vector<uint32_t>& out_VulkanSpirv);
+        void MakeOpenGLSourcesFromVulkanSpirv(ShaderStage stage, const std::vector<uint32_t>& vulkanSpirv, std::string& out_OpenGLSource);
 
-        void CompileAndLinkFromOpenGLSources(const std::string& vertexOpenGLSource, const std::string& fragmentOpenGLSource);
+        void CompileAndLinkFromOpenGLSources(const std::vector<std::pair<ShaderStage, std::string>>& sources);
         int CompileOpenGLSource(const char* shaderSource, GLenum shaderType, char* infoLog);
 
 

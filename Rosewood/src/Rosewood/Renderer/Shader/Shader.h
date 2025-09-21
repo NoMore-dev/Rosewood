@@ -4,14 +4,21 @@
 
 #include "Rosewood/Renderer/Shader/ShaderDataType.h"
 #include "Rosewood/Renderer/Buffer/Buffer.h"
+#include "ShaderStages.h"
 
 
 namespace Rosewood
 {
+    struct ShaderSpecification
+    {
+        std::string Name;
 
-    struct ShaderComponentPaths {
         std::string VertexPath;
         std::string FragmentPath;
+
+        std::optional<std::string> GeometryPath;
+        std::optional<std::string> HullPath;
+        std::optional<std::string> DomainPath;
     };
 
     struct TextureBindingSlot
@@ -25,8 +32,7 @@ namespace Rosewood
     public:
         virtual ~Shader() = default;
 
-        static Ref<Shader> Create(const std::string& filepath, const std::string& name );
-        static Ref<Shader> Create(const ShaderComponentPaths& componentPaths, const std::string& name);
+        static Ref<Shader> Create(const ShaderSpecification& shaderSpec);
 
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;
@@ -55,8 +61,7 @@ namespace Rosewood
         ~ShaderLibrary() = delete;
 
 
-        static Ref<Shader> Load(const std::string& filepath, const std::string& name);
-        static Ref<Shader> Load(const ShaderComponentPaths componentPaths, const std::string& name);
+        static Ref<Shader> Load(const ShaderSpecification& shaderSpec);
 
         static Ref<Shader> Get(const std::string& name);
 

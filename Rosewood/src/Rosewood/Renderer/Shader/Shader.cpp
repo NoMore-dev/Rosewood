@@ -6,24 +6,12 @@
 
 namespace Rosewood
 {
-	Ref<Shader> Shader::Create(const std::string& filepath, const std::string& name)
+	Ref<Shader> Shader::Create(const ShaderSpecification& shaderSpec)
 	{
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None: RW_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLShader>(filepath, name);
-		}
-
-		RW_CORE_ASSERT(false, "Unkown RendererAPI!");
-		return nullptr;
-	}
-
-	Ref<Shader> Shader::Create(const ShaderComponentPaths& componentPaths, const std::string& name)
-	{
-		switch (Renderer::GetAPI())
-		{
-		case RendererAPI::API::None: RW_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLShader>(componentPaths, name);
+		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLShader>(shaderSpec);
 		}
 
 		RW_CORE_ASSERT(false, "Unkown RendererAPI!");
@@ -34,25 +22,15 @@ namespace Rosewood
 
 	std::unordered_map<std::string, Ref<Shader>> ShaderLibrary::s_Shaders = std::unordered_map<std::string, Ref<Shader>>();
 
-	Ref<Shader> ShaderLibrary::Load(const std::string& filepath, const std::string& name)
+
+	Ref<Shader> ShaderLibrary::Load(const ShaderSpecification& shaderSpec)
 	{
-		Ref<Shader> shader = Shader::Create(filepath, name);
+		Ref<Shader> shader = Shader::Create(shaderSpec);
 
 		if (shader->IsCompiled() && Add(shader))
 			return shader;
 
-		RW_CORE_ERROR("ERROR::SHADERLIBRARY\n	Failed to load shader : '{0}'!", name);
-		return nullptr;
-	}
-
-	Ref<Shader> ShaderLibrary::Load(const ShaderComponentPaths componentPaths, const std::string& name)
-	{
-		Ref<Shader> shader = Shader::Create(componentPaths, name);
-
-		if (shader->IsCompiled() && Add(shader))
-			return shader;
-
-		RW_CORE_ERROR("ERROR::SHADERLIBRARY\n	Failed to load shader : '{0}'!", name);
+		RW_CORE_ERROR("ERROR::SHADERLIBRARY\n	Failed to load shader : '{0}'!", shaderSpec.Name);
 		return nullptr;
 	}
 

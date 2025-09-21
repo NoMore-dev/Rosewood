@@ -15,82 +15,99 @@
 
 namespace Rosewood
 {
-
-    OpenGLShader::OpenGLShader(const std::string& filepath, const std::string& name) :
-        m_RendererID(0)
+    static shaderc_shader_kind ShaderStageKind(ShaderStage stage)
     {
-        m_Name = name;
-
-        std::string source;
-        try
+        switch (stage)
         {
-            source = ReadFile(filepath);
+        case Rosewood::ShaderStage::Vertex:
+            return shaderc_shader_kind::shaderc_glsl_vertex_shader;
+        case Rosewood::ShaderStage::Fragment:
+            return shaderc_shader_kind::shaderc_glsl_fragment_shader;
+        case Rosewood::ShaderStage::Geometry:
+            return shaderc_shader_kind::shaderc_glsl_geometry_shader;
+        case Rosewood::ShaderStage::Hull:
+            return shaderc_shader_kind::shaderc_glsl_tess_control_shader;
+        case Rosewood::ShaderStage::Domain:
+            return shaderc_shader_kind::shaderc_glsl_tess_evaluation_shader;
+        default:
+            break;
         }
-        catch (std::ifstream::failure const&)
-        {
-            RW_CORE_ERROR("ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ");
-            return;
-        }
 
-        std::string vertexCode;
-        std::string fragmentCode;
-        SplitSource(source, vertexCode, fragmentCode);
-        RW_CORE_ASSERT(!vertexCode.empty(), "Missing vertex shader!");
-        RW_CORE_ASSERT(!fragmentCode.empty(), "Missing fragment shader!");
-
-
-        std::vector<uint32_t> vertexVulkanSpirv;
-        std::vector<uint32_t> fragmentVulkanSpirv;
-        MakeVulkanSpirvFromVulkanSources(vertexCode, fragmentCode, vertexVulkanSpirv, fragmentVulkanSpirv);
-        std::string vertexOpenGLSource;
-        std::string fragmentOpenGLSource;
-        MakeOpenGLSourcesFromVulkanSpirv(vertexVulkanSpirv, fragmentVulkanSpirv, vertexOpenGLSource, fragmentOpenGLSource);
-
-        CompileAndLinkFromOpenGLSources(vertexOpenGLSource, fragmentOpenGLSource);
-
-        ReflectShaderResources(fragmentVulkanSpirv);
-
-        InitializeMaterialDataUniformBuffer();
+        RW_CORE_ASSERT(false, " Invalid shader stage! ")
+        return shaderc_shader_kind(0);
     }
 
-    OpenGLShader::OpenGLShader(const ShaderComponentPaths& componentPaths, const std::string& name) :
+    static GLenum ShaderStageOpenGLenum(ShaderStage stage)
+    {
+        switch (stage)
+        {
+        case Rosewood::ShaderStage::Vertex:
+            return GL_VERTEX_SHADER;
+        case Rosewood::ShaderStage::Fragment:
+            return GL_FRAGMENT_SHADER;
+        case Rosewood::ShaderStage::Geometry:
+            return GL_GEOMETRY_SHADER;
+        case Rosewood::ShaderStage::Hull:
+            return GL_TESS_CONTROL_SHADER;
+        case Rosewood::ShaderStage::Domain:
+            return GL_TESS_EVALUATION_SHADER;
+        default:
+            break;
+        }
+
+        RW_CORE_ASSERT(false, " Invalid shader stage! ")
+        return GLenum(0);
+    }
+
+
+    OpenGLShader::OpenGLShader(const ShaderSpecification& shaderSpec) :
         m_RendererID(0)
     {
-        m_Name = name;
+        m_Name = shaderSpec.Name;
 
-        std::string vertexCode;
-        try
-        {
-            vertexCode = ReadFile(componentPaths.VertexPath);
-        }
-        catch (std::ifstream::failure const&)
-        {
-            RW_CORE_ERROR("ERROR::SHADER::VERTEX::FILE_NOT_SUCCESFULLY_READ");
-            return;
-        }
+        std::vector<std::pair<ShaderStage, std::string>> shaderStagesPaths;
+        shaderStagesPaths.push_back({ ShaderStage::Vertex, shaderSpec.VertexPath });
+        shaderStagesPaths.push_back({ ShaderStage::Fragment, shaderSpec.FragmentPath });
+        if (shaderSpec.GeometryPath.has_value()) shaderStagesPaths.push_back({ ShaderStage::Geometry, shaderSpec.GeometryPath.value()});
+        if (shaderSpec.HullPath.has_value()) shaderStagesPaths.push_back({ ShaderStage::Hull, shaderSpec.HullPath.value() });
+        if (shaderSpec.DomainPath.has_value()) shaderStagesPaths.push_back({ ShaderStage::Domain, shaderSpec.DomainPath.value() });
 
-        std::string fragmentCode;
-        try
+        std::vector<std::pair<ShaderStage, std::string>> shaderStagesVulkanSources;
+        for (auto& path : shaderStagesPaths)
         {
-            fragmentCode = ReadFile(componentPaths.FragmentPath);
-        }
-        catch (std::ifstream::failure const&)
-        {
-            RW_CORE_ERROR("ERROR::SHADER::FRAGMENT::FILE_NOT_SUCCESFULLY_READ");
-            return;
+            try
+            {
+                shaderStagesVulkanSources.push_back( { path.first, ReadFile(path.second) } );
+            }
+            catch (std::ifstream::failure const&)
+            {
+                RW_CORE_ERROR("ERROR::SHADER::" + ShaderStageString(path.first) + "::FILE_NOT_SUCCESFULLY_READ");
+                return;
+            }
         }
         
+        std::vector<std::pair<ShaderStage, std::vector<uint32_t>>> shaderStagesVulkanSpirv;
+        for (auto& source : shaderStagesVulkanSources)
+        {
+            std::vector<uint32_t> spirv;
+            MakeVulkanSpirvFromVulkanSource(source.first, source.second, spirv);
+            shaderStagesVulkanSpirv.push_back({ source.first, spirv });
+        }
+       
 
-        std::vector<uint32_t> vertexVulkanSpirv;
-        std::vector<uint32_t> fragmentVulkanSpirv;
-        MakeVulkanSpirvFromVulkanSources(vertexCode, fragmentCode, vertexVulkanSpirv, fragmentVulkanSpirv);
-        std::string vertexOpenGLSource;
-        std::string fragmentOpenGLSource;
-        MakeOpenGLSourcesFromVulkanSpirv(vertexVulkanSpirv, fragmentVulkanSpirv, vertexOpenGLSource, fragmentOpenGLSource);
+        std::vector<std::pair<ShaderStage, std::string>> shaderStagesOpenGLSources;
+        for (auto& spirv : shaderStagesVulkanSpirv)
+        {
+            std::string source;
+            MakeOpenGLSourcesFromVulkanSpirv(spirv.first, spirv.second, source);
+            shaderStagesOpenGLSources.push_back({ spirv.first, source });
+        }
 
-        CompileAndLinkFromOpenGLSources(vertexOpenGLSource, fragmentOpenGLSource);
 
-        ReflectShaderResources(fragmentVulkanSpirv);
+        CompileAndLinkFromOpenGLSources(shaderStagesOpenGLSources);
+
+        ReflectShaderResources(shaderStagesVulkanSpirv[1].second);
+
 
         InitializeMaterialDataUniformBuffer();
     }
@@ -166,164 +183,47 @@ namespace Rosewood
         return source;
     }
 
-    void OpenGLShader::SplitSource(const std::string& source, std::string& out_VertexCode, std::string& out_FragmentCode)
+    void OpenGLShader::MakeVulkanSpirvFromVulkanSource(ShaderStage stage, const std::string& vulkanSource, std::vector<uint32_t>& out_VulkanSpirv)
     {
-        const char* typeToken = "#type";
-        size_t typeTokenLength = strlen(typeToken);
-        size_t pos = source.find(typeToken, 0);
-        while (pos != std::string::npos)
-        {
-            size_t eol = source.find_first_of("\r\n", pos);
-            RW_CORE_ASSERT(eol != std::string::npos, "Syntax error");
-            size_t begin = pos + typeTokenLength + 1;
-            std::string type = source.substr(begin, eol - begin);
-            type = type.substr(0, type.find(" "));
-
-            size_t nextLinePos = source.find_first_not_of("\r\n", eol);
-            pos = source.find(typeToken, nextLinePos);
-
-            if (type == "vertex")
-                if (!out_VertexCode.empty())
-                    RW_CORE_WARN("Shader type {0} already loaded, new occurence ignored!", type);
-                else
-                    out_VertexCode = source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
-
-            else if (type == "fragment" || type == "pixel")
-                if (!out_FragmentCode.empty())
-                    RW_CORE_WARN("Shader type {0} already loaded, new occurence ignored!", type);
-                else
-                    out_FragmentCode = source.substr(nextLinePos, pos - (nextLinePos == std::string::npos ? source.size() - 1 : nextLinePos));
-
-            else
-                RW_CORE_WARN("Unknown shader type : {0}", type);
-        }
-    }
-
-    void OpenGLShader::MakeVulkanSpirvFromVulkanSources(const std::string& vertexVulkanSource, const std::string& fragmentVulkanSource, std::vector<uint32_t>& out_vertexVulkanSpirv, std::vector<uint32_t>& out_fragmentVulkanSpirv)
-    {
-        std::vector<uint32_t> vertexVulkanSpirv;
-        std::vector<uint32_t> fragmentVulkanSpirv;
-
         shaderc::Compiler compiler;
         shaderc::CompileOptions options;
         options.SetTargetEnvironment(shaderc_target_env_vulkan, shaderc_env_version_vulkan_1_2);
 
-        shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(vertexVulkanSource, shaderc_glsl_vertex_shader, "VERTEX_SHADER_VULCAN_SPIRV", options);
+        shaderc::SpvCompilationResult module = compiler.CompileGlslToSpv(vulkanSource, ShaderStageKind(stage), (ShaderStageString(stage) + "_SHADER_VULCAN_SPIRV").c_str(), options);
         if (module.GetCompilationStatus() != shaderc_compilation_status_success) {
             RW_CORE_ERROR(module.GetErrorMessage());
             return;
         }
-        out_vertexVulkanSpirv = { module.begin(), module.end() };
+        out_VulkanSpirv = { module.begin(), module.end() };
 
-        module = compiler.CompileGlslToSpv(fragmentVulkanSource, shaderc_glsl_fragment_shader, "FRAGMENT_SHADER_VULCAN_SPIRV", options);
-        if (module.GetCompilationStatus() != shaderc_compilation_status_success) {
-            RW_CORE_ERROR(module.GetErrorMessage());
-            return;
-        }
-        out_fragmentVulkanSpirv = { module.begin(), module.end() };
     }
 
 
-    void OpenGLShader::MakeOpenGLSourcesFromVulkanSpirv(const std::vector<uint32_t>& vertexVulkanSpirv, const std::vector<uint32_t>& fragmentVulkanSpirv, std::string& out_vertexOpenGLSource, std::string& out_fragmentOpenGLSource)
+    void OpenGLShader::MakeOpenGLSourcesFromVulkanSpirv(ShaderStage stage, const std::vector<uint32_t>& vulkanSpirv, std::string& out_OpenGLSource)
     {
-        spirv_cross::CompilerGLSL glslCompilerVertex(vertexVulkanSpirv);
-        out_vertexOpenGLSource = glslCompilerVertex.compile();
-
-        spirv_cross::CompilerGLSL glslCompilerFragment(fragmentVulkanSpirv);
-        out_fragmentOpenGLSource = glslCompilerFragment.compile();
-
-        {
-            //// compile from opengl source to opengl spirv
-            //    shaderc::Compiler compiler2;
-            //    shaderc::CompileOptions options2;
-            //    options2.SetTargetEnvironment(shaderc_target_env_opengl, shaderc_env_version_opengl_4_5);
-
-            //    std::vector<uint32_t> vertexOpenGLSpirv;
-            //    std::vector<uint32_t> fragmentOpenGLSpirv;
-
-            //    module = compiler2.CompileGlslToSpv(vertexOpenGLSource, shaderc_glsl_vertex_shader, "VERTEX_SHADER_OPENGL_SPIRV", options2);
-            //    if (module.GetCompilationStatus() != shaderc_compilation_status_success)
-            //    {
-            //        RW_CORE_ERROR(module.GetErrorMessage());
-            //        return;
-            //    }
-            //    vertexOpenGLSpirv = std::vector<uint32_t>(module.cbegin(), module.cend());
-
-            //    module = compiler2.CompileGlslToSpv(fragmentOpenGLSource, shaderc_glsl_fragment_shader, "FRAGMENT_SHADER_OPENGL_SPIRV", options2);
-            //    if (module.GetCompilationStatus() != shaderc_compilation_status_success)
-            //    {
-            //        RW_CORE_ERROR(module.GetErrorMessage());
-            //        return;
-            //    }
-            //    fragmentOpenGLSpirv = std::vector<uint32_t>(module.cbegin(), module.cend());
-
-
-            //// make opengl shader program from opengl spirv
-            //    GLuint m_RendererID = glCreateProgram();
-
-            //    GLuint vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-            //    glShaderBinary(1, &vertexShaderID, GL_SHADER_BINARY_FORMAT_SPIR_V, vertexOpenGLSpirv.data(), vertexOpenGLSpirv.size() * sizeof(uint32_t));
-            //    glSpecializeShader(vertexShaderID, "main", 0, nullptr, nullptr);
-
-            //    GLuint fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-            //    glShaderBinary(1, &fragmentShaderID, GL_SHADER_BINARY_FORMAT_SPIR_V, fragmentOpenGLSpirv.data(), fragmentOpenGLSpirv.size() * sizeof(uint32_t));
-            //    glSpecializeShader(fragmentShaderID, "main", 0, nullptr, nullptr);
-
-            //    glAttachShader(m_RendererID, vertexShaderID);
-            //    glAttachShader(m_RendererID, fragmentShaderID);
-
-            //    glLinkProgram(m_RendererID);
-
-            //    int success;
-            //    char* infoLog = new char[512];
-            //    glGetProgramiv(m_RendererID, GL_LINK_STATUS, &success);
-            //    if (!success)
-            //    {
-            //        glGetProgramInfoLog(m_RendererID, 512, NULL, infoLog);
-            //        RW_CORE_ERROR("{0}", infoLog);
-
-            //        glDeleteProgram(m_RendererID);
-
-            //        glDeleteShader(vertexShaderID);
-            //        glDeleteShader(fragmentShaderID);
-
-            //        return;
-            //    }
-
-            //    glDetachShader(m_RendererID, vertexShaderID);
-            //    glDetachShader(m_RendererID, fragmentShaderID);
-
-            //    glDeleteShader(vertexShaderID);
-            //    glDeleteShader(fragmentShaderID);
-
-            //    m_SuccessfullyCompiled = true;
-        }
+        spirv_cross::CompilerGLSL glslCompiler(vulkanSpirv);
+        out_OpenGLSource = glslCompiler.compile();
     }
 
 
-    void OpenGLShader::CompileAndLinkFromOpenGLSources(const std::string& vertexCode, const std::string& fragmentCode)
+    void OpenGLShader::CompileAndLinkFromOpenGLSources(const std::vector<std::pair<ShaderStage, std::string>>& sources)
     {
-        unsigned int vertex, fragment;
+        std::vector<unsigned int> stageIDs;
         char infoLog[512];
 
-        vertex = CompileOpenGLSource(vertexCode.c_str(), GL_VERTEX_SHADER, infoLog);
-        if (!vertex)
+        for (auto& source : sources)
         {
-            RW_CORE_ERROR("{0}", infoLog);
-            return;
-        }
-
-        fragment = CompileOpenGLSource(fragmentCode.c_str(), GL_FRAGMENT_SHADER, infoLog);
-        if (!fragment)
-        {
-            RW_CORE_ERROR("{0}", infoLog);
-            glDeleteShader(vertex);
-            return;
+            stageIDs.push_back(CompileOpenGLSource(source.second.c_str(), ShaderStageOpenGLenum(source.first), infoLog));
+            if (!stageIDs.back())
+            {
+                RW_CORE_ERROR("{0}", infoLog);
+                return;
+            }
         }
 
         m_RendererID = glCreateProgram();
-        glAttachShader(m_RendererID, vertex);
-        glAttachShader(m_RendererID, fragment);
+        for (auto& id : stageIDs)
+            glAttachShader(m_RendererID, id);
         glLinkProgram(m_RendererID);
 
         int success;
@@ -333,15 +233,16 @@ namespace Rosewood
             glGetProgramInfoLog(m_RendererID, 512, NULL, infoLog);
             RW_CORE_ERROR("{0}", infoLog);
 
-            glDeleteShader(vertex);
-            glDeleteShader(fragment);
+            for (auto& id : stageIDs)
+                glDeleteShader(id);
+
             return;
         }
-
-        glDetachShader(m_RendererID, vertex);
-        glDetachShader(m_RendererID, fragment);
-        glDeleteShader(vertex);
-        glDeleteShader(fragment);
+        for (auto& id : stageIDs)
+        {
+            glDetachShader(m_RendererID, id);
+            glDeleteShader(id);
+        }
 
         m_SuccessfullyCompiled = true;
     }
