@@ -1,3 +1,5 @@
+VULKAN_SDK = os.getenv("VULKAN_SDK")
+
 workspace "Rosewood"
 	architecture "x64"
 	startproject "ModelViewer"
@@ -19,11 +21,12 @@ IncludeDir["imgui"] = "Rosewood/vendor/imgui"
 IncludeDir["glm"] = "Rosewood/vendor/glm"
 IncludeDir["stb"] = "Rosewood/vendor/stb_image"
 IncludeDir["entt"] = "Rosewood/vendor/entt/include"
-IncludeDir["vulkanSDK"] = "Rosewood/vendor/vulkanSDK/1.4.309.0/Include"
+IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
 
 include "Rosewood/vendor/GLFW"
 include "Rosewood/vendor/glad"
 include "Rosewood/vendor/imgui"
+
 
 project "Rosewood"
 	location "Rosewood"
@@ -61,7 +64,7 @@ project "Rosewood"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.vulkanSDK}"
+		"%{IncludeDir.VulkanSDK}",
 	}
 
 	links 
@@ -69,9 +72,15 @@ project "Rosewood"
 		"GLFW",
 		"glad",
 		"imgui",
-		"opengl32.lib",
 
-		"Rosewood/vendor/vulkanSDK/1.4.309.0/Lib/**",
+		"%{VULKAN_SDK}/Lib/spirv-cross-core.lib",
+		"%{VULKAN_SDK}/Lib/spirv-cross-cpp.lib",
+		"%{VULKAN_SDK}/Lib/spirv-cross-glsl.lib",
+		"%{VULKAN_SDK}/Lib/spirv-cross-reflect.lib",
+		"%{VULKAN_SDK}/Lib/spirv-cross-util.lib",
+		"%{VULKAN_SDK}/Lib/shaderc_combined.lib",
+
+		"opengl32.lib",
 	}
 
 	filter "system:windows"
