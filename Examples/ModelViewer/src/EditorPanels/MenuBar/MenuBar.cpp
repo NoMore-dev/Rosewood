@@ -21,7 +21,7 @@ void MenuBar::OnImGuiRender()
 				std::string filePath;
 				std::string fileName;
 				std::string fileExtension;
-				bool result = OpenFileExplorer(filePath, fileName, fileExtension);
+				bool result = Rosewood::Utils::OpenFileExplorer(filePath, fileName, fileExtension);
 
 				if (result)
 				{

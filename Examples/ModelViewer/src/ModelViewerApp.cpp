@@ -20,6 +20,14 @@ public:
 		Rosewood::ShaderLibrary::Load(Rosewood::ShaderSpecification{ "grid",			"../../shaders/Grid/grid.vert", "../../shaders/Grid/grid.frag"	});
 
 
+		Rosewood::ComputeShaderSpecification computeSpec = Rosewood::ComputeShaderSpecification{};
+			computeSpec.Name = "compute";
+			computeSpec.Path = "../../shaders/Compute/compute.comp";
+			computeSpec.WorkGroupCount = glm::ivec3(1);
+		Rosewood::Ref<Rosewood::ComputeShader> computeShader = Rosewood::ComputeShader::Create(computeSpec);
+
+
+
 		m_PrimaryScene = std::make_shared<Rosewood::Scene>();
 		m_SceneHierachy = std::make_shared<SceneHierachy>(m_PrimaryScene);
 

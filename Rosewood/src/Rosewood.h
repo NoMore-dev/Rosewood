@@ -16,8 +16,10 @@
 #include "Rosewood/Scene/Components.h"
 #include "Rosewood/Scene/Transform/Transform.h"
 
-#include "Rosewood/Utils/FileExplorer.h"
+#include "Rosewood/Utils/File.h"
 #include "Rosewood/Utils/Conversions.h"
+
+#include "Rosewood/Compute/ComputeShader.h"
 
 //--Renderer-----------------------------
 #include "Rosewood/Renderer/Renderer.h"

@@ -4,6 +4,7 @@
 #include "OpenGLShader.h"
 #include "Rosewood/Renderer/Shader/SPIRVShaderDataType.h"
 #include "Rosewood/Utils/Conversions.h"
+#include "Rosewood/Utils/File.h"
 
 #include <shaderc/shaderc.hpp>
 #include <spirv_cross/spirv_cross.hpp>
@@ -77,7 +78,7 @@ namespace Rosewood
         {
             try
             {
-                shaderStagesVulkanSources.push_back( { path.first, ReadFile(path.second) } );
+                shaderStagesVulkanSources.push_back( { path.first, Utils::ReadFile(path.second) } );
             }
             catch (std::ifstream::failure const&)
             {
@@ -156,33 +157,6 @@ namespace Rosewood
         m_MaterialDataUniformBuffer = UniformBuffer::Create(m_MaterialDataLayout.GetStride());
     }
 
-
-    std::string OpenGLShader::ReadFile(const std::string& filepath)
-    {
-        std::string source;
-        std::ifstream file;
-        // ensure ifstream objects can throw exceptions:
-        file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-        try
-        {
-            // open files
-            file.open(filepath);
-            std::stringstream stream;
-            // read file’s buffer contents into streams
-            stream << file.rdbuf();
-            // close file handlers
-            file.close();
-            // convert stream into string
-            source = stream.str();
-        }
-        catch (std::ifstream::failure const&)
-        {
-            throw;
-        }
-
-        return source;
-    }
-
     void OpenGLShader::MakeVulkanSpirvFromVulkanSource(ShaderStage stage, const std::string& vulkanSource, std::vector<uint32_t>& out_VulkanSpirv)
     {
         shaderc::Compiler compiler;
@@ -247,12 +221,12 @@ namespace Rosewood
         m_SuccessfullyCompiled = true;
     }
 
-    int OpenGLShader::CompileOpenGLSource(const char* shaderCode, GLenum shaderType, char* infoLog)
+    int OpenGLShader::CompileOpenGLSource(const char* shaderSource, GLenum shaderType, char* infoLog)
     {
         unsigned int shaderID;
 
         shaderID = glCreateShader(shaderType);
-        glShaderSource(shaderID, 1, &shaderCode, NULL);
+        glShaderSource(shaderID, 1, &shaderSource, NULL);
         glCompileShader(shaderID);
 
         int success;
@@ -272,6 +246,7 @@ namespace Rosewood
     void OpenGLShader::Bind() const
     {
         glUseProgram(m_RendererID);
+
         m_MaterialDataUniformBuffer->BindToBindingPoint(2);
     }
 

@@ -24,8 +24,6 @@ namespace Rosewood
 
         void InitializeMaterialDataUniformBuffer();
 
-        std::string ReadFile(const std::string& filepath);
-
         void MakeVulkanSpirvFromVulkanSource(ShaderStage stage, const std::string& vulkanSource, std::vector<uint32_t>& out_VulkanSpirv);
         void MakeOpenGLSourcesFromVulkanSpirv(ShaderStage stage, const std::vector<uint32_t>& vulkanSpirv, std::string& out_OpenGLSource);
 

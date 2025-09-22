@@ -1,0 +1,21 @@
+#version 450
+
+layout (local_size_x = 64) in;
+
+layout(std140, binding=0) buffer PosistionsBuffer {
+    vec4 Position[];
+};
+
+const float MAX_DIST = 100.;
+
+void main() {
+    uint idx = gl_GlobalInvocationID.x;
+
+    vec3 p = Position[idx].xyz;
+
+    if (length(p) > MAX_DIST) {
+        Position[idx] = vec4(0,0,0,1);
+    } else {
+        Position[idx] = vec4(p + vec3(0.01, 0., 0.), 1.0);
+    }
+}
