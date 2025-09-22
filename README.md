@@ -4,8 +4,14 @@
   
   The example project simply allows to load models from .OBJ files and edit materials and transforms parameters. 
 
+## Dependencies
+  Require VulkanSDK present on disk and referenced in environment variables as VULKAN_SDK.  
+  Also require OpenGL32.lib.   
+  Everything else is included and built with the project.
+
 ## How to build
-  Only Windows supported for now. 
+  Only Windows supported for now.
+  
   To generate a Visual Studio 2022 solution execute _generate-vs2022.bat_. Then build using Visual Studio.
 
 ## Features to come
