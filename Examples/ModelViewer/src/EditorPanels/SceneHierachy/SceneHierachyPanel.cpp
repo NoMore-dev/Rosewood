@@ -24,7 +24,7 @@ void SceneHierachyPanel::OnImGuiRender()
 		uint32_t i = 0;
 		for (auto entityID : m_SceneHierarchy->GetEntitiesInHierarchy())
 		{
-			const std::string& entityTag = (m_Scene->GetComponent<Rosewood::TagComponent>(entityID)).Tag;
+			const std::string& entityTag = (m_Scene->GetRegistry()->GetComponent<Rosewood::TagComponent>(entityID)).Tag;
 
 			ImGui::TableNextRow();
 
@@ -52,7 +52,7 @@ void SceneHierachyPanel::OnImGuiRender()
 			if (ImGui::Button("X"))
 			{
 				m_SceneHierarchy->RemoveEntityFromHierachy(i);
-				m_Scene->DestroyEntity(entityID);
+				m_Scene->GetRegistry()->DestroyEntity(entityID);
 				i--;
 
 				if (selectedEntityID == entityID)

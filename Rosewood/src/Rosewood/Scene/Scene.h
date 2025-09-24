@@ -1,17 +1,7 @@
 #pragma once
 
-#include "Rosewood/Renderer/VertexArray/VertexArray.h"
-#include "Rosewood/Renderer/Shader/Shader.h"
-#include "Rosewood/Renderer/Camera/PerspectiveCamera.h"
-#include "Rosewood/Renderer/Framebuffer/Framebuffer.h"
-#include "Entity.h"
-
-#include "Rosewood/Renderer/Texture/Texture.h"
-
-#include "entt/entt.hpp"
-
-#include <utility>
-
+#include "Registry/Registry.h"
+#include "Rosewood/Scene/Systems/ComputeShaderSystem/ComputeShadersSystem.h"
 
 namespace Rosewood
 {
@@ -28,65 +18,11 @@ namespace Rosewood
 		bool HasPrimaryCamera() const;
 		EntityID GetPrimaryCameraID() const;
 
-		EntityID CreateEntity();
-		void DestroyEntity(EntityID entityID);
-
-		template<typename T>
-		bool HasComponent(EntityID entityID) const;
-		template<typename T>
-		void AddTag(EntityID entityID);
-		template<typename T, typename... Args>
-		T& AddComponent(EntityID entityID, Args&&... args);
-		template<typename T>
-		T& GetComponent(EntityID entityID);
-		template<typename T>
-		void RemoveComponent(EntityID entityID);
-
-		template<typename... Components>
-		auto GetAllEntitiesWith();
-
+		Ref<Registry> GetRegistry() { return m_Registry; }
 
 	private:
-		entt::registry m_Registry;
-		EntityID m_PrimaryCameraEntityID = entt::null;
+		Ref<Registry> m_Registry;
+		Ref<ComputeShadersSystem> m_ComputeShadersSystem;
+		EntityID m_PrimaryCameraEntityID = Entity::null;
 	};
-
-
-
-
-	template<typename T>
-	inline bool Scene::HasComponent(EntityID entityID) const
-	{
-		return m_Registry.any_of<T>(entityID);
-	}
-
-	template<typename T>
-	inline void Scene::AddTag(EntityID entityID)
-	{
-		m_Registry.emplace<T>(entityID);
-	}
-
-	template<typename T, typename... Args>
-	inline T& Scene::AddComponent(EntityID entityID, Args&&... args)
-	{
-		return m_Registry.emplace<T>(entityID, std::forward<Args>(args)...);
-	}
-
-	template<typename T>
-	inline T& Scene::GetComponent(EntityID entityID)
-	{
-		return m_Registry.get<T>(entityID);
-	}
-	template<typename T>
-	inline void Scene::RemoveComponent(EntityID entityID)
-	{
-		m_Registry.remove<T>(entityID);
-	}
-
-	template<typename... Components>
-	inline auto Scene::GetAllEntitiesWith()
-	{
-		return m_Registry.view<Components...>();
-	}
-
 }

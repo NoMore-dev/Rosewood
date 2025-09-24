@@ -3,6 +3,8 @@
 #include "Rosewood/Renderer/Mesh/Mesh.h"
 #include "Rosewood/Renderer/VertexArray/VertexArray.h"
 #include "Rosewood/Renderer/Camera/Camera.h"
+#include "Rosewood/Renderer/Camera/PerspectiveCamera.h"
+#include "Rosewood/Renderer/Camera/OrthographicCamera.h"
 #include "Rosewood/Renderer/Lighting/Light.h"
 #include "Rosewood/Renderer/Material/Material.h"
 

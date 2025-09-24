@@ -31,14 +31,14 @@ void MenuBar::OnImGuiRender()
 
 						for (Rosewood::Mesh& mesh : model.MeshObjects)
 						{
-							Rosewood::EntityID entityID = m_Scene->CreateEntity();
+							Rosewood::EntityID entityID = m_Scene->GetRegistry()->CreateEntity();
 							m_SceneHierarchy->SetSelectedEntity(entityID);
 							m_SceneHierarchy->AddEntityToHierachy(entityID);
 
-							m_Scene->AddComponent<Rosewood::TagComponent>(entityID, mesh.m_MeshData.ObjectName);
+							m_Scene->GetRegistry()->AddComponent<Rosewood::TagComponent>(entityID, mesh.m_MeshData.ObjectName);
 
 							glm::mat4 transform = glm::mat4(1.0f);
-							m_Scene->AddComponent<Rosewood::TransformComponent>(entityID, transform);
+							m_Scene->GetRegistry()->AddComponent<Rosewood::TransformComponent>(entityID, transform);
 
 							std::vector<Rosewood::Ref<Rosewood::Material>> materials(mesh.m_MeshData.Surfaces.size());
 
@@ -64,7 +64,7 @@ void MenuBar::OnImGuiRender()
 								material->SetTextureBinding(0, m_CheckerBoardTexture);
 							}
 
-							m_Scene->AddComponent<Rosewood::RenderableObject3D>(entityID, mesh.MakeVertexArrays(), std::move(materials), mesh.m_MeshData.SlotNames);
+							m_Scene->GetRegistry()->AddComponent<Rosewood::RenderableObject3D>(entityID, mesh.MakeVertexArrays(), std::move(materials), mesh.m_MeshData.SlotNames);
 
 						}
 					}

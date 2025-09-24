@@ -17,15 +17,15 @@ void Inspector::OnImGuiRender()
 	{
 		ImGui::Separator();
 
-		if (m_Scene->HasComponent<Rosewood::TransformComponent>(selectedEntityID))
+		if (m_Scene->GetRegistry()->HasComponent<Rosewood::TransformComponent>(selectedEntityID))
 		{
-			Rosewood::TransformData& transformData = m_Scene->GetComponent<Rosewood::TransformComponent>(selectedEntityID).Transform;
+			Rosewood::TransformData& transformData = m_Scene->GetRegistry()->GetComponent<Rosewood::TransformComponent>(selectedEntityID).Transform;
 			DrawTransformComponentInspector(transformData);
 		}
 
-		if (m_Scene->HasComponent<Rosewood::RenderableObject3D>(selectedEntityID))
+		if (m_Scene->GetRegistry()->HasComponent<Rosewood::RenderableObject3D>(selectedEntityID))
 		{
-			Rosewood::RenderableObject3D& renderableObject = m_Scene->GetComponent<Rosewood::RenderableObject3D>(selectedEntityID);
+			Rosewood::RenderableObject3D& renderableObject = m_Scene->GetRegistry()->GetComponent<Rosewood::RenderableObject3D>(selectedEntityID);
 			DrawRenderableObject3DComponentInspector(renderableObject);
 		}
 	}

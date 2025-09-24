@@ -7,9 +7,9 @@ CameraController::CameraController(Rosewood::Ref<Rosewood::Scene> scene)
 	cameraTransform.SetTranslation(glm::vec3(50.f, 0.f, 0.f));
 	cameraTransform.SetRotationEuler(glm::vec3(0.f, glm::pi<float>() / 2.f, 0.f));
 	Rosewood::Ref<Rosewood::PerspectiveCamera> camera = std::make_shared<Rosewood::PerspectiveCamera>();
-	Rosewood::EntityID cameraEntityID = m_Scene->CreateEntity();
-	m_Scene->AddComponent<Rosewood::TransformComponent>(cameraEntityID, cameraTransform);
-	m_Scene->AddComponent<Rosewood::CameraComponent>(cameraEntityID, camera);
+	Rosewood::EntityID cameraEntityID = m_Scene->GetRegistry()->CreateEntity();
+	m_Scene->GetRegistry()->AddComponent<Rosewood::TransformComponent>(cameraEntityID, cameraTransform);
+	m_Scene->GetRegistry()->AddComponent<Rosewood::CameraComponent>(cameraEntityID, camera);
 	m_Scene->SetPrimaryCameraID(cameraEntityID);
 }
 
@@ -49,7 +49,7 @@ void CameraController::OnEvent(Rosewood::Event& event)
 bool CameraController::OnMouseScrolledEvent(Rosewood::MouseScrolledEvent& event)
 {
 	Rosewood::EntityID cameraID = m_Scene->GetPrimaryCameraID();
-	Rosewood::Ref<Rosewood::PerspectiveCamera> camera = m_Scene->GetComponent<Rosewood::CameraComponent>(cameraID).CameraRef;
+	Rosewood::Ref<Rosewood::PerspectiveCamera> camera = m_Scene->GetRegistry()->GetComponent<Rosewood::CameraComponent>(cameraID).CameraRef;
 
 	float newFov = camera->GetSettings().fov - m_ZoomSpeed*event.GetYOffset();
 	newFov = std::min(std::max(newFov, m_MinFov), m_MaxFov);
@@ -65,6 +65,6 @@ void CameraController::UpdateCameraTransform()
 	glm::mat4 mat = glm::mat4_cast(q1) * glm::mat4_cast(q2) * glm::translate(glm::mat4(1.0f), glm::vec3(50.f, 0.f, 0.f)) * glm::mat4_cast(glm::quat(glm::vec3(0.f, glm::pi<float>() / 2.f, 0.f)));
 
 	Rosewood::EntityID cameraID = m_Scene->GetPrimaryCameraID();
-	Rosewood::TransformComponent& cameraTransformComponent = m_Scene->GetComponent<Rosewood::TransformComponent>(cameraID);
+	Rosewood::TransformComponent& cameraTransformComponent = m_Scene->GetRegistry()->GetComponent<Rosewood::TransformComponent>(cameraID);
 	cameraTransformComponent.Transform.SetMatrix(mat);
 }
