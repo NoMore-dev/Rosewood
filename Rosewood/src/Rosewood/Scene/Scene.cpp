@@ -32,13 +32,7 @@ namespace Rosewood
 			std::vector<PointLight> pointLights;
 			std::vector<SpotLight> spotLights;
 			std::vector<DirectionalLight> dirLights;
-			auto view = m_Registry->m_Registry.view<PointLightComponent>();
-			for (auto&& [entityID, light] : view.each())
-			{
-				pointLights.push_back(light.LightData);
-				TransformData transform = m_Registry->GetComponent<TransformComponent>(entityID).Transform;
-				pointLights.back().Position = glm::vec4(transform.GetTranslation(), 1.f);
-			}
+			PreparedLights(pointLights, spotLights, dirLights);
 
 			Rosewood::Renderer::BeginScene(*cameraData, cameraTransform, pointLights, spotLights, dirLights);
 
@@ -47,7 +41,7 @@ namespace Rosewood
 			for (auto&& [entityID, transform, renderableObject3D] : group.each())
 			{
 				for (int i = 0; i < renderableObject3D.Surfaces.size(); i++)
-					Rosewood::Renderer::Submit(renderableObject3D.Materials[i], renderableObject3D.Surfaces[i], &transform.Transform.GetMatrix());
+					Rosewood::Renderer::Submit(renderableObject3D.Materials[i], renderableObject3D.Surfaces[i], &transform.Transform.GetMatrix(), renderableObject3D.CastShadows);
 			}
 
 			Rosewood::Renderer::DrawScene();
@@ -73,5 +67,25 @@ namespace Rosewood
 	EntityID Scene::GetPrimaryCameraID() const
 	{
 		return m_PrimaryCameraEntityID;
+	}
+
+
+	void Scene::PreparedLights(std::vector<PointLight>& out_PointLights, std::vector<SpotLight>& out_SpotLights, std::vector<DirectionalLight>& out_DirectionalLights)
+	{
+		auto view1 = m_Registry->m_Registry.view<PointLightComponent>();
+		for (auto&& [entityID, light] : view1.each())
+		{
+			out_PointLights.push_back(light.LightData);
+			TransformData transform = m_Registry->GetComponent<TransformComponent>(entityID).Transform;
+			out_PointLights.back().Position = glm::vec4(transform.GetTranslation(), 1.f);
+		}
+
+		auto view2 = m_Registry->m_Registry.view<DirectionalLightComponent>();
+		for (auto&& [entityID, light] : view2.each())
+		{
+			out_DirectionalLights.push_back(light.LightData);
+			TransformData transform = m_Registry->GetComponent<TransformComponent>(entityID).Transform;
+			out_DirectionalLights.back().Direction = glm::vec4(transform.GetForward(), 0.f);
+		}
 	}
 }

@@ -21,6 +21,9 @@ namespace Rosewood
 		Ref<Registry> GetRegistry() { return m_Registry; }
 
 	private:
+		void PreparedLights(std::vector<PointLight>& out_PointLights, std::vector<SpotLight>& out_SpotLights, std::vector<DirectionalLight>& out_DirectionalLights);
+
+	private:
 		Ref<Registry> m_Registry;
 		Ref<ComputeShadersSystem> m_ComputeShadersSystem;
 		EntityID m_PrimaryCameraEntityID = Entity::null;

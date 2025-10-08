@@ -6,18 +6,21 @@ ViewportPanel::ViewportPanel(Rosewood::Ref<Rosewood::Scene> scene)
 	: m_Scene(scene)
 {
 	Rosewood::FramebufferSpecification fbSpec;
-	fbSpec.Height = 1280;
-	fbSpec.Width = 720;
-	fbSpec.Samples = 1;
-	fbSpec.AttachmentsFormats = Rosewood::FramebufferAttachmentsFormats{ {Rosewood::AttachmentFormat::RGBA}, Rosewood::AttachmentFormat::NO_ATTACHEMENT };
+		fbSpec.Height = 1280;
+		fbSpec.Width = 720;
+		fbSpec.Samples = 1;
+		fbSpec.AttachmentsFormats = Rosewood::FramebufferAttachmentsFormats{ {Rosewood::AttachmentFormat::RGBA}, Rosewood::AttachmentFormat::NO_ATTACHEMENT };
 	m_Framebuffer = Rosewood::Framebuffer::Create(fbSpec);
 
 	Rosewood::FramebufferSpecification msfbSpec;
-	msfbSpec.Height = 1280;
-	msfbSpec.Width = 720;
-	msfbSpec.Samples = 8;
-	msfbSpec.AttachmentsFormats = Rosewood::FramebufferAttachmentsFormats{ {Rosewood::AttachmentFormat::RGBA} };
+		msfbSpec.Height = 1280;
+		msfbSpec.Width = 720;
+		msfbSpec.Samples = 8;
+		msfbSpec.AttachmentsFormats = Rosewood::FramebufferAttachmentsFormats{ {Rosewood::AttachmentFormat::RGBA} };
 	m_MultiSampledFramebuffer = Rosewood::Framebuffer::Create(msfbSpec);
+
+
+	Rosewood::Renderer::SetRenderFramebuffer(m_MultiSampledFramebuffer);
 }
 
 void ViewportPanel::OnImGuiRender()

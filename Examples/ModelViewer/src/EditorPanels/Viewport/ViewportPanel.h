@@ -10,11 +10,6 @@ public:
 
 	void OnImGuiRender();
 
-	Rosewood::Ref<Rosewood::Framebuffer> GetRenderFrameBuffer()
-	{
-		return m_MultiSampledFramebuffer;
-	}
-
 private:
 	Rosewood::Ref<Rosewood::Scene> m_Scene;
 	Rosewood::Ref<Rosewood::Framebuffer> m_MultiSampledFramebuffer;

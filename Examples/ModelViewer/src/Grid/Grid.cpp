@@ -27,7 +27,7 @@ Grid::Grid(Rosewood::Ref<Rosewood::Scene> scene)
 	std::vector<std::string> names = { "material" };
 	std::vector<Rosewood::Ref<Rosewood::Material>> materials = { material };
 
-	m_Scene->GetRegistry()->AddComponent<Rosewood::RenderableObject3D>(m_GridEntityID, vas, materials, names);
+	m_Scene->GetRegistry()->AddComponent<Rosewood::RenderableObject3D>(m_GridEntityID, vas, materials, names, false);
 }
 
 Grid::~Grid()

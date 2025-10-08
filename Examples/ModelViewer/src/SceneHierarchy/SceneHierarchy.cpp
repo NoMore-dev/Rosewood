@@ -3,16 +3,7 @@
 
 SceneHierachy::SceneHierachy(Rosewood::Ref<Rosewood::Scene> scene)
 	: m_Scene(scene) 
-{
-	//Lights
-	Rosewood::EntityID pointLightEntity = m_Scene->GetRegistry()->CreateEntity();
-	AddEntityToHierachy(pointLightEntity);
-
-	m_Scene->GetRegistry()->AddComponent<Rosewood::TagComponent>(pointLightEntity, "PointLight");
-	m_Scene->GetRegistry()->AddComponent<Rosewood::PointLightComponent>(pointLightEntity, glm::vec4(.1f), glm::vec3(.5f), glm::vec3(.5f), glm::vec3(1.f, .0003f, 0.0001f));
-	Rosewood::TransformData pointLightTransform = Rosewood::TransformData(glm::vec3(30.f, 20.f, 0.f), glm::quat(), glm::vec3(1.f));
-	m_Scene->GetRegistry()->AddComponent<Rosewood::TransformComponent>(pointLightEntity, pointLightTransform);
-}
+{}
 
 
 const std::vector<Rosewood::EntityID>& SceneHierachy::GetEntitiesInHierarchy()

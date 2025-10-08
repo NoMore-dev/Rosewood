@@ -65,9 +65,12 @@ namespace Rosewood
 		std::vector<Ref<VertexArray>> Surfaces;
 		std::vector<Ref<Material>> Materials;
 		std::vector<std::string> SlotsNames;
+		bool CastShadows = true;
 
 		RenderableObject3D() = default;
 		RenderableObject3D(const RenderableObject3D&) = default;
+		RenderableObject3D(std::vector<Ref<VertexArray>> surfaces, std::vector<Ref<Material>> materials, std::vector<std::string>& slotsNames, bool castShadows)
+			: Surfaces(surfaces), Materials(materials), SlotsNames(slotsNames), CastShadows(castShadows) {}
 		RenderableObject3D(std::vector<Ref<VertexArray>> surfaces, std::vector<Ref<Material>> materials, std::vector<std::string>& slotsNames)
 			: Surfaces(surfaces), Materials(materials), SlotsNames(slotsNames) {}
 	};

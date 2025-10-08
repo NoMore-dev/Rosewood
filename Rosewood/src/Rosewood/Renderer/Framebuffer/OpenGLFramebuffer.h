@@ -23,8 +23,8 @@ namespace Rosewood
 
 	protected:
 		uint32_t m_RendererID = 0;
-		uint32_t m_BindTarget;
-		OpenGLAttachmentSpecification m_Specification;
+		uint32_t m_BindTarget = 0;
+		OpenGLAttachmentSpecification m_Specification = {};
 
 		bool m_Valid = false;
 	};

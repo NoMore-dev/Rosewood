@@ -55,6 +55,11 @@ layout (std140, binding = 2) uniform Material
     float Shininess;
  } ub_Material;
 
+ layout (std140, binding = 4) uniform LightSpace //TEMP
+{
+    mat4 Matrix;
+} ub_LightSpace;
+
 
 layout (location = 0) in vec3 v_WorldPosition;
 layout (location = 1) in vec3 v_WorldNormal;
@@ -63,6 +68,7 @@ layout (location = 3) in vec3 v_ViewNormal;
 
 layout (location = 0) out vec4 FragColor;
 
+layout(binding = 10) uniform sampler2D ShadowMap;
 
 
 struct LightComposition
@@ -79,6 +85,7 @@ vec3 normal;
 void ComputeDirectionallight(Directionallight light);
 void ComputePointlight(Pointlight light);
 void ComputeSpotlight(Spotlight light);
+float ShadowCalculation(vec4 fragPosLightSpace, vec3 direction);
 
 
 
@@ -94,9 +101,9 @@ void main()
     for(int i = 0; i < ub_Lighting.LightsCounts.x; i++)
         ComputePointlight(ub_Lighting.PointLights[i]);
     for(int i = 0; i < ub_Lighting.LightsCounts.y; i++)
-        ComputeDirectionallight(ub_Lighting.DirLights[i]);
-    for(int i = 0; i < ub_Lighting.LightsCounts.z; i++)
         ComputeSpotlight(ub_Lighting.SpotLights[i]);
+    for(int i = 0; i < ub_Lighting.LightsCounts.z; i++)
+        ComputeDirectionallight(ub_Lighting.DirLights[i]);
 
     vec3 result = cumulativeLightComposition.Ambient * ub_Material.Ambient  + cumulativeLightComposition.Diffuse * ub_Material.Diffuse + cumulativeLightComposition.Specular * ub_Material.Specular;
     FragColor = vec4(result, 1.0);
@@ -133,7 +140,6 @@ void ComputePointlight(Pointlight light)
 
 void ComputeDirectionallight(Directionallight light)
 {
-
     vec3 lightDirection = normalize(-light.direction);
     float diffuseIntensity = max(dot(normal, lightDirection), 0.0);
 
@@ -144,9 +150,12 @@ void ComputeDirectionallight(Directionallight light)
     vec3 diffuse = light.diffuse * diffuseIntensity;
     vec3 specular = light.specular * specularIntensity;
 
+    vec4 fragPosLightSpace = ub_LightSpace.Matrix * vec4(v_WorldPosition, 1.0);
+    float shadow = 1. - ShadowCalculation(fragPosLightSpace, lightDirection);
+
     cumulativeLightComposition.Ambient += ambient;
-    cumulativeLightComposition.Diffuse += diffuse;
-    cumulativeLightComposition.Specular += specular;
+    cumulativeLightComposition.Diffuse += diffuse * shadow;
+    cumulativeLightComposition.Specular += specular * shadow;
 }
 
 void ComputeSpotlight(Spotlight light)
@@ -172,3 +181,21 @@ void ComputeSpotlight(Spotlight light)
     cumulativeLightComposition.Diffuse += diffuse;
     cumulativeLightComposition.Specular += specular;
 }
+
+float ShadowCalculation(vec4 fragPosLightSpace, vec3 direction)
+{
+    // perform perspective divide
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    float closestDepth = texture(ShadowMap, projCoords.xy).r; 
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+    // check whether current frag pos is in shadow
+    //float bias = max(0.05 * (1.0 - dot(normal, direction)), 0.0005);
+    float bias = 0.0003;
+    float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
+
+    return shadow;
+}  
